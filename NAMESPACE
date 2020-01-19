@@ -1,0 +1,19 @@
+exportPattern("^[[:alpha:]]+")
+importFrom("mvtnorm","rmvnorm", "dmvnorm")
+importFrom("interp","interpp")
+importFrom("dlm","arms")
+importFrom("dlm","convex.bounds")
+importFrom("fields",make.surface.grid)
+importFrom("compiler","cmpfun")
+importFrom("graphics", "axis", "contour", "legend", "lines", "par",
+             "plot", "polygon", "title","points")
+importFrom("stats", "aggregate", "median", "optim", "plot.ts", "qnorm",
+             "quantile", "rgamma", "rnorm", "rpois", "rweibull","dbeta","dnorm","pnorm","dgamma","na.omit")
+importFrom("utils", "data")
+importFrom("graphics", "layout")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar")
+importFrom("car", "scatterplotMatrix")
+importFrom("grDevices", "dev.new")
+
+
+
