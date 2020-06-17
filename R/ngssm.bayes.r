@@ -10,8 +10,10 @@
 globalVariables("sd")
 globalVariables("hist")
 globalVariables("nsamplex")
+globalVariables("da1")
+#globalVariables("Break")
 #globalVariables("txtProgressBar")
-
+#'@export
 ngssm.bayes<-function(formula, data,
                        na.action="na.omit",pz=NULL,nBreaks=NULL,model="Poisson",
                        StaPar=NULL,amp=FALSE,a0=0.01,b0=0.01,prw=c(1,1),prnu=NULL,prchi=NULL,prmu=NULL,prbetamu=NULL,
@@ -24,6 +26,7 @@ pointss=10,nsamplex=1000,mcmc=NULL,postplot=FALSE,contourplot=FALSE,LabelParThet
 #Dataframe data
 #if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
 #if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
+call <- match.call()
 oldoptions <-options(warn=-1)
 on.exit(options(oldoptions)) 
 
@@ -43,6 +46,91 @@ Break=NULL
 #    }
 #  }
 
+###################################################################################
+###################################################################################
+###################################################################################
+nameaux=all.vars(formula)
+nameaux=nameaux[-1]
+namesz=paste("Z",1:2000,sep="")
+xz<- nameaux %in% namesz
+if(is.null(pz)){
+  if(length(which(xz==TRUE))!=0)stop("Bad input for Z and pz!")
+}else{
+  if(pz!=length(which(xz==TRUE)))stop("Bad input for Z and pz!!")
+}
+# Event: PEM
+if(model=="PEM"){
+  namey=all.vars(formula)[1] #Y
+  Y=get(namey,data)   # Y
+  xze<- nameaux %in% "Event"
+  if(length(which(xze==TRUE))==0)stop("Include an Event variable!")
+  #all.vars(formula) =="Event"
+  #rr=which(all.vars(formula) =="Event")
+  #aa=all.vars(formula)[rr]
+  Event=get("Event",data)
+#  Break=GridP(Y, Event, nT = nBreaks)
+  da2=model.frame(formula,data)
+  namey=all.vars(formula)[1] #Y
+  nameaux1y=all.vars(formula)
+  xz1y<- nameaux1y %in% namey
+  namexz1y=nameaux1y[xz1y==FALSE]
+  da2=da2[namexz1y]
+  Z=NULL
+  if(dim(da2)[2]==1){X=NULL
+  }else{
+    nameaux1=all.vars(formula)
+    nameaux1=nameaux1[-1]
+    xz1<- nameaux1 %in% "Event"
+    namexz1=nameaux1[xz1==FALSE]
+    if(length(namexz1)==0){X=NULL}else{X=da2[namexz1]}
+  }
+  Break=GridP(Y, Event, nT = nBreaks)
+}else{
+  Event=NULL
+  # End Event
+  namey=all.vars(formula)[1] #Y
+  Y=get(namey,data)   # Y
+  #Y
+  #names(data)=c("Y","X1","Z1","Z2","Z3")
+  #fz <- Y~X1+Z1+Z2+Z3
+  if(is.null(pz)){
+    da2=model.frame(formula,data)
+    namey=all.vars(formula)[1] #Y
+    nameaux1y=all.vars(formula)
+    xz1y<- nameaux1y %in% namey
+    namexz1y=nameaux1y[xz1y==FALSE]
+    if(dim(da2[namexz1y])[2]==0){X=NULL}else{da2=da2[namexz1y];X=da2}
+    Z=NULL
+  }else{
+    #if(pz!=NULL){
+    #names(da1)=c("Y","X1","Z1","Z2","Z3")
+    #fz <- Y~X1+Z1+Z2+Z3
+    namesz=paste("Z",1:pz,sep="")
+    da2=model.frame(formula,da1)
+    Z=da2[namesz]
+    #Z
+    nameaux=all.vars(formula)
+    nameaux=nameaux[-1]
+    xz<- nameaux %in% namesz
+    namexz=nameaux[xz==FALSE]
+    if(dim(da2[namexz])[2]==0){X=NULL}else{X=da2[namexz]}
+    #X
+    #}
+  }
+}
+Yt<-Y
+Xt<-X
+Zt<-Z
+#cat("Yt=",Yt)
+#print(Xt)
+#print(Zt)
+#print(Event)
+###################################################################################
+###################################################################################
+###################################################################################
+
+
+
 # DataFrame:  
 #dataf<-data  
 #dataf<-dataf[all.vars(formula)]
@@ -54,107 +142,108 @@ Break=NULL
 #Yt=get(names(dataf)[1])
 #Ytdd=dataf[[colnames(dataf)[1]]]
 
-if(model=="PEM"){
-dataf<-data  
-dataf<-dataf[c(all.vars(formula)[1],colnames(data)[2],all.vars(formula)[-1])]
-#Dataframe data
-if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
-if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
+#if(model=="PEM"){
+#dataf<-data  
+#dataf<-dataf[c(all.vars(formula)[1],colnames(data)[2],all.vars(formula)[-1])]
+##Dataframe data
+#if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
+#if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
 
+##dataf<-dataf[all.vars(formula)]
+##Yt=get(names(dataf)[1])
+#Ytdd=dataf[[colnames(dataf)[1]]]
+##Event=get(names(dataf)[2])
+#Eventdd=dataf[[colnames(dataf)[2]]]
+#Breakdd=GridP(Ytdd, Eventdd, nT = nBreaks)
+#Event<-Eventdd
+#Break<-Breakdd
+#Xtdd=NULL
+#Ztdd=NULL
+#if(is.null(pz)){
+#if(dim(dataf)[2]>2){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-2
+#Xtdd=matrix(0,nnnd,ppd)
+#for(i in 1:ppd){
+##Xt[,i]=get(names(dataf)[i+2])
+#Xtdd[,i]=dataf[[names(dataf)[i+2]]] 
+
+#}
+#}
+#}
+# if(is.null(pz)!=TRUE){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-2-pz
+#if(ppd>=1){
+#Xtdd=matrix(0,nnnd,ppd)
+#for(i in 1:ppd){
+##Xt[,i]=get(names(dataf)[i+2])
+#Xtdd[,i]=dataf[[names(dataf)[i+2]]]  
+#}
+#}
+#if(pz>=1){
+#Ztdd=matrix(0,nnnd,pz)
+#for(j in 1:pz){
+##Zt[,j]=get(names(dataf)[j+ppd+2])
+#Ztdd[,j]=dataf[[names(dataf)[j+ppd+2]]]
+#}
+#}
+#}
+#}
+
+#if(model!="PEM"){
+#dataf<-data  
 #dataf<-dataf[all.vars(formula)]
-#Yt=get(names(dataf)[1])
-Ytdd=dataf[[colnames(dataf)[1]]]
-#Event=get(names(dataf)[2])
-Eventdd=dataf[[colnames(dataf)[2]]]
-Breakdd=GridP(Ytdd, Eventdd, nT = nBreaks)
-Event<-Eventdd
-Break<-Breakdd
-Xtdd=NULL
-Ztdd=NULL
-if(is.null(pz)){
-if(dim(dataf)[2]>2){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-2
-Xtdd=matrix(0,nnnd,ppd)
-for(i in 1:ppd){
-#Xt[,i]=get(names(dataf)[i+2])
-Xtdd[,i]=dataf[[names(dataf)[i+2]]] 
+#Event<-NULL
+#Break<-NULL
 
-}
-}
-}
- if(is.null(pz)!=TRUE){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-2-pz
-if(ppd>=1){
-Xtdd=matrix(0,nnnd,ppd)
-for(i in 1:ppd){
-#Xt[,i]=get(names(dataf)[i+2])
-Xtdd[,i]=dataf[[names(dataf)[i+2]]]  
-}
-}
-if(pz>=1){
-Ztdd=matrix(0,nnnd,pz)
-for(j in 1:pz){
-#Zt[,j]=get(names(dataf)[j+ppd+2])
-Ztdd[,j]=dataf[[names(dataf)[j+ppd+2]]]
-}
-}
-}
-}
+##Dataframe data
+#if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
+#if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
+#Ytdd=dataf[[colnames(dataf)[1]]]
 
-if(model!="PEM"){
-dataf<-data  
-dataf<-dataf[all.vars(formula)]
-Event<-NULL
-Break<-NULL
+#Xtdd=NULL
+#Ztdd=NULL
+#if(is.null(pz)){
+#if(dim(dataf)[2]>1){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-1
+#Xtdd=matrix(0,nnnd,ppd)
+#for(i in 1:ppd){
+##Xt[,i]=get(names(dataf)[i+1])
+###print(get(names(dataf)[i+1]))
+#Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
 
-#Dataframe data
-if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
-if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
-Ytdd=dataf[[colnames(dataf)[1]]]
-
-Xtdd=NULL
-Ztdd=NULL
-if(is.null(pz)){
-if(dim(dataf)[2]>1){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-1
-Xtdd=matrix(0,nnnd,ppd)
-for(i in 1:ppd){
-#Xt[,i]=get(names(dataf)[i+1])
-##print(get(names(dataf)[i+1]))
-Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
-
-}
-}
-}
-if(is.null(pz)!=TRUE){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-1-pz
-if(ppd>=1){
-Xtdd=matrix(0,nnnd,ppd)
-for(i in 1:ppd){
-#Xt[,i]=get(names(dataf)[i+1])
-Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
-}
-}
-if(pz>=1){
-Ztdd=matrix(0,nnnd,pz)
-for(j in 1:pz){
-#Zt[,j]=get(names(dataf)[j+ppd+1])
-Ztdd[,j]=dataf[[names(dataf)[j+ppd+1]]]
-}
-}
-}
-}
-Yt<-Ytdd
-Xt<-Xtdd
-Zt<-Ztdd
-#detach(dataf)
-#print(Yt)
-#print(Xt)
-#print(Zt)
+#}
+#}
+#}
+#if(is.null(pz)!=TRUE){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-1-pz
+#if(ppd>=1){
+#Xtdd=matrix(0,nnnd,ppd)
+#for(i in 1:ppd){
+##Xt[,i]=get(names(dataf)[i+1])
+#Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
+#}
+#}
+#if(pz>=1){
+#Ztdd=matrix(0,nnnd,pz)
+#for(j in 1:pz){
+##Zt[,j]=get(names(dataf)[j+ppd+1])
+#Ztdd[,j]=dataf[[names(dataf)[j+ppd+1]]]
+#}
+#}
+#}
+#}
+#Yt<-Ytdd
+#Xt<-Xtdd
+#Zt<-Ztdd
+##detach(dataf)
+##print(Yt)
+##print(Xt)
+##print(Zt)
+################################################################################
 
 
 aans=FALSE
@@ -620,7 +709,7 @@ nn=length(Yt)
 resultsopt=NA
 resultsopt=tryCatch(optim(StaPar1, hessian=TRUE,LikeF2,
 #lower=lower,upper=upper,
-,method="BFGS",formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
+method="BFGS",na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
 a0=a0,b0=b0,model=model,control = list(maxit = 30000, temp = 2000,
 trace = FALSE,REPORT = 500)), error = c)
 if(resultsopt$convergence!=0)stop("Convergence error! Bad inputs! Sorry!")
@@ -708,7 +797,7 @@ upper=lsup
 
 Log.Dens<-function(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,model,a0,b0,lower,upper,
 prw,prnu,prchi,prmu,prbetamu,prbetasigma){ 
-log.post=-LikeF(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
+log.post=-LikeF(StaPar,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,na.action=na.action,
 model=model,a0=a0,b0=b0)+log(PriorF(StaPar,
 model=model,prw=prw,prnu=prnu,prchi=prchi,prmu=prmu,prbetamu=prbetamu,prbetasigma=prbetasigma))
 return(log.post)
@@ -768,8 +857,8 @@ names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs")
 #cat("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n",
 #"\nNGSSMEL Package:","Bayes -",model,"\n")
 if(verbose) print (ngssm.list)
-ngssm.list<-list(mfit,ci*100,nn,meanest,formula,data)
-names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients","formula","data")
+ngssm.list<-list(mfit,ci*100,nn,meanest,formula)
+names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients","formula")
 
 #Graphs:
 if(p>1){
@@ -800,7 +889,7 @@ postsample=nuout
 colnames(postsample)=LabelParTheta
 ngssm.list=list(ngssm.list,postsample)
 message("End!")
-return(ngssm.list)
+#return(ngssm.list)
 }#End TS Models 
 ################################################################################
 ################################################################################
@@ -894,7 +983,7 @@ p=(1+1+dxt+dzt);
 if(is.null(StaPar)){ #Begin StaPar
 StaPar=numeric(p);StaPar1=StaPar;
 #StaPar[1]=0.999;StaPar1[1]=log(-log(StaPar[1]));StaPar[2]=0.75;StaPar1[2]=log(StaPar[2]);if(p>2){StaPar[3:(dxt+2)]=rep(0.01,dxt);};
-StaPar[1]=0.95;StaPar1[1]=log(-log(StaPar[1]));StaPar[2]=0.75;StaPar1[2]=log(StaPar[2]);if(p>2){StaPar[3:(dxt+2)]=rep(0,dxt);;StaPar1[3:(dxt+2)]=StaPar[3:(dxt+2)];};
+StaPar[1]=0.95;StaPar1[1]=log(-log(StaPar[1]));StaPar[2]=0.75;StaPar1[2]=log(StaPar[2]);if(p>2){StaPar[3:(dxt+2)]=rep(0,dxt);StaPar1[3:(dxt+2)]=StaPar[3:(dxt+2)];};
 }#EndStaPar
 #StaPar1=StaPar;
 #StaPar1[1]=log(-log(StaPar[1]));StaPar1[2]=log(StaPar[2]);
@@ -935,7 +1024,7 @@ nn=length(Yt)
 resultsopt=NA
 resultsopt=tryCatch(optim(StaPar1, hessian=TRUE,LikeF2,
 #lower=lower,upper=upper,
-,method="BFGS",formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
+method="BFGS",na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
 a0=a0,b0=b0,model=model,control = list(maxit = 30000, temp = 2000,
 trace = FALSE,REPORT = 500)), error = c)
 if(is.null(resultsopt$convergence)){stop("Convergence error! Bad inputs! Sorry!")}else{
@@ -998,7 +1087,7 @@ message("\nPosterior computations...")
 Log.Dens<-function(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
 model,a0,b0,lower,upper,
 prw,prnu,prchi,prmu,prbetamu,prbetasigma){ 
-log.post=-LikeF(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
+log.post=-LikeF(StaPar,na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
 model=model,a0=a0,b0=b0)+log(PriorF(StaPar,
 model=model,prw=prw,prnu=prnu,prchi=prchi,prmu=prmu,prbetamu=prbetamu,prbetasigma=prbetasigma))
 return(log.post)
@@ -1057,8 +1146,8 @@ ngssm.list<-list(mfit,ci*100,nn)
 names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs")
 #names(ngssm.list)<-c("Mean","Sd","Lower","Median","Upper","Nom. Level(%)","n.obs")
 if(verbose) print (ngssm.list)
-ngssm.list<-list(mfit,ci*100,nn,meanest,formula,data)
-names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients","formula","data")
+ngssm.list<-list(mfit,ci*100,nn,meanest,formula)
+names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients","formula")
 
 #cat("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n",
 #"\nNGSSMEL Package:","Bayes -",model,"\n")
@@ -1087,7 +1176,7 @@ postsample=nuout
 colnames(postsample)=LabelParTheta
 ngssm.list=list(ngssm.list,postsample)
 message("End!")
-return(ngssm.list)
+#return(ngssm.list)
 } #end SR Models
 ################################################################################
 ################################################################################
@@ -1170,7 +1259,7 @@ nn=length(Yt)
 resultsopt=NA
 resultsopt=tryCatch(optim(StaPar1, hessian=TRUE,LikeF2,
 #lower=lower,upper=upper,
-,method="BFGS",formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
+method="BFGS",na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
 amp=amp,a0=a0,b0=b0,model=model,control = list(maxit = 30000, temp = 2000,
 trace = FALSE,REPORT = 500)), error = c)
 if(is.null(resultsopt$convergence)){stop("Convergence error! Bad inputs! Sorry!")}else{
@@ -1226,7 +1315,7 @@ message("\nTime:..")
 
 Log.Dens<-function(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
 model,a0,b0,lower,upper,prw,prnu,prchi,prmu,prbetamu,prbetasigma){ 
-log.post=-LikeF(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
+log.post=-LikeF(StaPar,na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
 model=model,a0=a0,b0=b0)+log(PriorF(StaPar,
 model=model,prw=prw,prnu=prnu,prchi=prchi,prmu=prmu,prbetamu=prbetamu,prbetasigma=prbetasigma))
 return(log.post)
@@ -1285,8 +1374,8 @@ names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs")
 #cat("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n",
 #"\nNGSSMEL Package:","Bayes -",model,"\n")
 if(verbose) print (ngssm.list)
-ngssm.list<-list(mfit,ci*100,nn,meanest,formula,data)
-names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients","formula","data")
+ngssm.list<-list(mfit,ci*100,nn,meanest,formula)
+names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients","formula")
 
 #Graphs:
 if(p>1){
@@ -1312,10 +1401,52 @@ postsample=nuout
 colnames(postsample)=LabelParTheta
 ngssm.list=list(ngssm.list,postsample)
 message("End!")
-return(ngssm.list)
+#return(ngssm.list)
 }#End PEM Model
 ################################################################################
 ################################################################################
+
+#return(ngssm.list)
+obj <- list()
+fitfit<-list(model, formula, mfit[,1])
+fit<-list(sys = sys.call(),"Mean.Post",mfit[,1])
+names(fit)[3]="coefficients"
+obj$fit <-fit
+obj$model<-model
+obj$formula<-formula
+obj$pz<-pz
+obj$a0<-a0
+obj$b0<-b0
+obj$nBreaks<-nBreaks
+obj$ci<-ci
+obj$na.action<-na.action
+if(aans){method="ARMS"}else{method="Numerical Integration"}
+obj$method<-list("Bayesian Estimation",method)
+obj$nBreaks<-nBreaks
+obj$pointss<-pointss
+obj$nsample<-nsamplex
+obj$cov <- cov(ngssm.list[[2]])
+estoptc<-mfit[,1]
+if(is.null(LabelParTheta)){names(estoptc)=paste0(c('\u03b8'),1:p)}else{names(estoptc)=LabelParTheta}
+obj$coefficients<-list("Mean.Post",estoptc)
+obj$data<-data
+MeanSmooth=SmoothingF(formula=formula,data=data,model=model,
+                      a0=a0,b0=b0,pz=pz,Type="Marg",amp=amp,samples=1,ci=ci,splot=FALSE,StaPar=ngssm.list[[2]])
+aaff<-MeanSmooth[[1]][,1]
+nnpp<-nn
+if(model=="PEM"){nnpp<-length(Break)-1}
+names(aaff)<-1:nnpp
+obj$fitted.values<-list("Smoothed estimates",aaff) # FilteringF function
+obj$y<-obj$fitted.values
+#names(obj$y)<-c("Smoothed estimates")
+pnn<-length(obj$fitted.values)
+obj$x<-1:pnn
+#names(obj$x)<-c("Order obs.")
+#obj$summary<-list(cat ("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n","\nNGSSEML Package:","Bayes -",model,"\n"),ngssm.list[[1]]) #colocar a lista que criei de output
+obj$summary<-list("*****Non-Gaussian State Space Models with Exact Likelihood*****\nNGSSEML Package:Bayes -",model,ngssm.list[[1]]) #colocar a lista que criei de output
+obj$samplepost<-ngssm.list[[2]]
+class(obj) = "ngssm.bayes"
+return(obj)
 
 #End ARMS
 ################################################################################
@@ -1689,7 +1820,7 @@ nn=length(Yt)
 resultsopt=NA
 resultsopt=tryCatch(optim(StaPar1, hessian=TRUE,LikeF2,
 #lower=lower,upper=upper,
-,method="BFGS",formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
+method="BFGS",na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
 a0=a0,b0=b0,model=model,control = list(maxit = 30000, temp = 2000,
 trace = FALSE,REPORT = 500)), error = c)
 if(is.null(resultsopt$convergence)){stop("Convergence error! Bad inputs! Sorry!")}else{
@@ -1772,7 +1903,7 @@ grid_output=gridfunction(pointss,linf,lsup)  #Call the Grid function
 
 #####Posterior ###########
 Log.Post.rw<-function(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks){ 
-log.post=-LikeF(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
+log.post=-LikeF(StaPar,na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
 model=model,a0=a0,b0=b0)+log(PriorF(StaPar,model=model,prw=prw,prnu=prnu,prchi=prchi,prmu=prmu,
 prbetamu=prbetamu,prbetasigma=prbetasigma))
 return(log.post)
@@ -1932,16 +2063,16 @@ colnames(mfit)=c("Mean","Median","Sd","Lower","Upper")
 rownames(mfit)=paste0(c('\u03b8'),1:p)
 if(is.null(LabelParTheta)==FALSE){rownames(mfit)=LabelParTheta}
 nn=length(Yt)
-ngssm.list<-list(mfit,ci*100,nn)
-names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs")
+ngssm.list<-list(mfit,ci*100,nn,meanest)
+names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients")
 #cat("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n",
 #"\nNGSSMEL Package:","Bayes -",model,"\n") 
 if(verbose) print (ngssm.list)
 #names(ngssm.list)<-c("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n",
 #"\nNGSSMEL Package:","Bayes -",model,"Cred. Level(%)","n.obs")
-ngssm.list<-list(mfit,ci*100,nn,meanest)
-ngssm.list<-list(mfit,ci*100,nn,meanest,formula,data)
-names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients","formula","data")
+#ngssm.list<-list(mfit,ci*100,nn,meanest)
+#ngssm.list<-list(mfit,ci*100,nn,meanest)
+#names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients")
 ngssm.list=list(ngssm.list,postsample)
 p=length(StaPar)
 if(postplot==TRUE){
@@ -2129,7 +2260,7 @@ message("\nDone!\n")
 
 message("End!")
 #ngssm.list[[1]]
-return(ngssm.list)
+#return(ngssm.list)
 
 }
 
@@ -2255,7 +2386,7 @@ nn=length(Yt)
 resultsopt=NA
 resultsopt=tryCatch(optim(StaPar1, hessian=TRUE,LikeF2,
 #lower=lower,upper=upper,
-,method="BFGS",formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
+method="BFGS",na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
 a0=a0,b0=b0,model=model,control = list(maxit = 30000, temp = 2000,
 trace = FALSE,REPORT = 500)), error = c)
 if(is.null(resultsopt$convergence)){stop("Convergence error! Bad inputs! Sorry!")}else{
@@ -2300,7 +2431,7 @@ if(linf[2]<0){linf[2]=1e-20}
 Delta=(lsup-linf)/(pointss-1)
 grid_output=gridfunction(pointss,linf,lsup)  #Call the Grid function
 Log.Post.rw.sr<-function(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks){ 
-log.post=-LikeF(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
+log.post=-LikeF(StaPar,na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
 model=model,a0=a0,b0=b0)+log(PriorF(StaPar,model=model,prw=prw,prnu=prnu,prchi=prchi,prmu=prmu,
 prbetamu=prbetamu,prbetasigma=prbetasigma))
 return(log.post)
@@ -2456,8 +2587,8 @@ names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs")
 #cat("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n",
 #"\nNGSSMEL Package:","Bayes - SR",model,"\n") 
 if(verbose) print (ngssm.list)
-ngssm.list<-list(mfit,ci*100,nn,meanest,formula,data)
-names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients","formula","data")
+ngssm.list<-list(mfit,ci*100,nn,meanest)
+names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients")
 ngssm.list=list(ngssm.list,postsample)
 #ngssm.list[[1]]
 if(postplot==TRUE){
@@ -2644,7 +2775,7 @@ message("\nDone!\n")
 #} #end post_plot
 
 message("End!")
-return(ngssm.list)
+#return(ngssm.list)
 }
 
 if(model=="PEM"){                                   #PEM
@@ -2738,11 +2869,23 @@ upper[1]=0.999;if(dxt>0){upper[2:(dxt+1)]=rep(bumu,dxt);};
 
 nn=length(Yt)
 resultsopt=NA
+#resultsopt=tryCatch(optim(StaPar1, hessian=TRUE,LikeF2,
+#method="BFGS",na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
+#amp=amp,a0=a0,b0=b0,model=model,control = control), error = c)
+#print(Yt)
+#print(Xt)
+#print(Zt)
+#print(Break)
+#print(Event)
+#print(StaPar1)
+#print(model)
+#print(a0)
+#print(b0)
 resultsopt=tryCatch(optim(StaPar1, hessian=TRUE,LikeF2,
-#lower=lower,upper=upper,
-,method="BFGS",formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
-amp=amp,a0=a0,b0=b0,model=model,control = list(maxit = 30000, temp = 2000,
-trace = FALSE,REPORT = 500)), error = c)
+method="BFGS",na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
+a0=a0,b0=b0,model=model,
+control = list(maxit = 30000, temp = 2000,trace = FALSE,REPORT = 500)), error = c)
+print(resultsopt)
 if(is.null(resultsopt$convergence)){stop("Convergence error! Bad inputs! Sorry!")}else{
 if(resultsopt$convergence!=0)stop("Convergence error! Bad inputs! Sorry!")}
 estopt=resultsopt$par     # Point Estimates:
@@ -2777,7 +2920,7 @@ Delta=(lsup-linf)/(pointss-1)
 Delta
 grid_output=gridfunction(pointss,linf,lsup)  #Call the Grid function
 Log.Post.rw.pem<-function(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks){ 
-log.post=-LikeF(StaPar,formula=formula, data=data,na.action=na.action,pz=pz,nBreaks=nBreaks,
+log.post=-LikeF(StaPar,na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
 model=model,a0=a0,b0=b0,amp=amp)+log(PriorF(StaPar,model=model,
 prw=prw,prnu=prnu,prchi=prchi,prmu=prmu,prbetamu=prbetamu,prbetasigma=prbetasigma))
 return(log.post)
@@ -2939,8 +3082,8 @@ names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs")
 #cat("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n",
 #"\nNGSSMEL Package:","Bayes - Reliability",model,"\n") 
 if(verbose) print (ngssm.list)
-ngssm.list<-list(mfit,ci*100,nn,meanest,formula,data)
-names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients","formula","data")
+ngssm.list<-list(mfit,ci*100,nn,meanest)
+names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients")
 
 ngssm.list=list(ngssm.list,postsample)
 if(postplot==TRUE){
@@ -3140,13 +3283,58 @@ message("\nDone!\n")
 
 
 message("End!")
-return(ngssm.list)
+#print(ngssm.list[[2]])
+#return(ngssm.list)
 }
 #return(ngssm.list)
-
+  obj <- list()
+  #fitfit<-list(model, formula,meanest)
+  fit<-list(sys = sys.call(),"Mean.Post",meanest)
+  names(fit)[3]=list("coefficients")
+  obj$fit <-fit
+  obj$model<-model
+  obj$formula<-formula
+  obj$pz<-pz
+  obj$na.action<-na.action
+  obj$a0<-a0
+  obj$b0<-b0
+  obj$nBreaks<-nBreaks
+  obj$ci<-ci
+  if(aans){method="ARMS"}else{method="Numerical Integration"}
+  obj$method<-list("Bayesian Estimation",method)
+  obj$nBreaks<-nBreaks
+  obj$pointss<-pointss
+  obj$nsample<-nsamplex
+  obj$cov <- cov(ngssm.list[[2]])
+  estoptc<-mfit[,1]
+  if(is.null(LabelParTheta)){names(estoptc)=paste0(c('\u03b8'),1:p)}else{names(estoptc)=LabelParTheta}
+  obj$coefficients<-list("Mean.Post",estoptc)
+  obj$data<-data
+  MeanSmooth=SmoothingF(formula=formula,data=data,model=model,
+                        a0=a0,b0=b0,pz=pz,Type="Marg",amp=amp,samples=1,nBreaks=nBreaks,ci=ci,splot=FALSE,StaPar=ngssm.list[[2]])
+  aaff<-MeanSmooth[[1]][,1]
+  nnpp<-nn
+  #print(nnpp)
+  if(model=="PEM"){nnpp<-length(Break)-1}
+  names(aaff)<-1:nnpp
+  obj$fitted.values<-list("Smoothed estimates",aaff) # FilteringF function
+  obj$y<-obj$fitted.values
+  #names(obj$y)<-c("Smoothed estimates")
+  pnn<-length(obj$fitted.values)
+  obj$x<-1:pnn
+  #names(obj$x)<-c("Order obs.")
+ # obj$summary<-list(cat ("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n","\nNGSSEML Package:","Bayes -",model,"\n"),ngssm.list[[1]]) #colocar a lista que criei de output
+   obj$summary<-list("*****Non-Gaussian State Space Models with Exact Likelihood*****\nNGSSEML Package:Bayes -",model,ngssm.list[[1]]) #colocar a lista que criei de output
+  
+  obj$samplepost<-ngssm.list[[2]]
+  #obj$data<-data
+  class(obj) = "ngssm.bayes"
+  #cat(obj)
+  return(obj)
+  
+    
 }#End Numerical Integration
 ################################################################################
 
 }#End ngssm.Bayes
-ngssm.bayes <- cmpfun(ngssm.bayes)
 ################################################################################

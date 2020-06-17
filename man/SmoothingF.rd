@@ -126,55 +126,16 @@ The model options are the Poisson, Normal, Laplace, GED, Gamma, Weibull and Gene
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 \code{\link{FilteringF}}
-\code{\link{LikeF}}
 \code{\link{ngssm.mle}}
 \code{\link{ngssm.bayes}}
 
 }
 \examples{
-
-###############################################################################
-##
-## CLASSICAL ESTIMATION
-##
-###############################################################################
-
 ################################################################################
 ##
 ## PEM Example: the GTE data 
 ##
 ################################################################################
-library(NGSSEML)
-data(gte_data)
-Ytm=gte_data$V1
-Xtm=NULL
-Ztm=NULL
-model="PEM"
-amp=FALSE
-Eventm=gte_data$V2        
-Breakm=GridP(Ytm, Eventm, nT = NULL)
-LabelParTheta=c("w")
-StaPar=c(0.73)
-a0=0.01
-b0=0.01
-ci=0.95
-fit=ngssm.mle(Ytm~1,data=data.frame(Ytm,Eventm),model=model,StaPar=StaPar,
-nBreaks=NULL,amp=amp,a0=a0,b0=b0,ci=ci,LabelParTheta=LabelParTheta)
-estopt=fit[[1]][1]
-set.seed(10)
-MeanSmooth=SmoothingF(Ytm~1,data=data.frame(Ytm,Eventm),model=model,
-a0=0.01,b0=0.1,amp=FALSE,samples=1000,ci=0.95,splot=FALSE,StaPar=estopt) 
-
-#Smoothing:
-set.seed(1000)
-fits=SmoothingF(Ytm~1,data=data.frame(Ytm,Eventm),model=model,Type="Cond",
-a0=0.01,b0=0.1,ci=0.95,samples=1,splot=FALSE,StaPar=estopt)
-##PlotF function:
-PlotF(Ytm~1,data=data.frame(Ytm,Eventm),model=model,plotYt=FALSE,
-axisxdate=Breakm[1:17],Proc="Smooth",Type="Cond",distl="Filter",a0=0.01,b0=0.1,
-ci=0.95,posts=estopt,Typeline='s',
-cols=c("black","blue","lightgrey"),xxlab="Time to Failure (Days)",yylab="Failure rate",
-yylim=c(0,0.008),xxlim=c(0,139),Lty=c(1,2,1),Lwd=c(2,2,2),Cex=0.68)
 
 ###############################################################################
 ##
@@ -190,8 +151,8 @@ yylim=c(0,0.008),xxlim=c(0,139),Lty=c(1,2,1),Lwd=c(2,2,2),Cex=0.68)
 ### Inputs: 
 data(gte_data)
 Ytm=gte_data$V1
-Eventm=gte_data$V2   
-Breakm=GridP(Ytm, Eventm, nT = NULL)
+Event=gte_data$V2   
+Breakm=NGSSEML:::GridP(Ytm, Event, nT = NULL)
 Xtm=NULL
 Ztm=NULL
 model="PEM"
@@ -209,14 +170,14 @@ ci=0.95
 alpha=1-ci
 #Fit:
 #Bayesian:
-fitbayes=ngssm.bayes(Ytm~1,data=data.frame(Ytm,Eventm),model=model,
+fitbayes=ngssm.bayes(Ytm~Event,data=data.frame(Ytm,Event),model=model,
 pz=NULL,StaPar=StaPar,amp=amp,a0=a0,b0=b0,prw=c(1,1),prnu=NULL,prchi=NULL,
 prmu=NULL,prbetamu=NULL,prbetasigma=NULL,ci=ci,pointss=pointss,nsamplex=nsamplex,
 postplot=FALSE,contourplot=FALSE,LabelParTheta=LabelParTheta)
-posts=fitbayes[[2]]
+posts=fitbayes$samplepost
 #Smoothing:
 set.seed(1000)
-fits=SmoothingF(Ytm~1,data=data.frame(Ytm,Eventm),model=model,pz=NULL,
+fits=SmoothingF(Ytm~Event,data=data.frame(Ytm,Event),model=model,pz=NULL,
 StaPar=posts,Type="Marg",a0=a0,b0=b0,ci=ci,samples=1,splot=FALSE)
 ###############################################################################
  

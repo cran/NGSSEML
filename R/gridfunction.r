@@ -5,8 +5,9 @@
 ##
 ##
 ################################################################################
-
-#### Grid Function: 
+##
+##
+#'@noRd
 gridfunction<-function(npoints,linf,lsup){
 npar=length(linf)
 xgrid=matrix(0,npoints,npar)
@@ -17,5 +18,5 @@ grid.l=data.frame(xgrid)
 gridoutput=make.surface.grid(grid.l)
 return(gridoutput[,])
 }
-gridfunction <- cmpfun(gridfunction)
+
 ################################################################################

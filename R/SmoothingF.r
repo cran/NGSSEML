@@ -6,7 +6,7 @@
 
 ##
 ##
-
+#'@export
 SmoothingF <- function(formula, data,na.action="na.omit",pz=NULL,nBreaks=NULL,
                       model="Poisson",StaPar=NULL,Type="Cond",a0=0.01,b0=0.01,
                         amp=FALSE,samples=1,ci=0.95,splot=FALSE){
@@ -26,6 +26,90 @@ SmoothingF <- function(formula, data,na.action="na.omit",pz=NULL,nBreaks=NULL,
 #          warning("Different environments on formulas")
 #    }
 #  }
+  Event=NULL
+  Break=NULL  
+  ###################################################################################
+  ###################################################################################
+  ###################################################################################
+  nameaux=all.vars(formula)
+  nameaux=nameaux[-1]
+  namesz=paste("Z",1:2000,sep="")
+  xz<- nameaux %in% namesz
+  if(is.null(pz)){
+    if(length(which(xz==TRUE))!=0)stop("Bad input for Z and pz!")
+  }else{
+    if(pz!=length(which(xz==TRUE)))stop("Bad input for Z and pz!!")
+  }
+  # Event: PEM
+  if(model=="PEM"){
+    namey=all.vars(formula)[1] #Y
+    Y=get(namey,data)   # Y
+    xze<- nameaux %in% "Event"
+    if(length(which(xze==TRUE))==0)stop("Include an Event variable!")
+    #all.vars(formula) =="Event"
+    #rr=which(all.vars(formula) =="Event")
+    #aa=all.vars(formula)[rr]
+    Event=get("Event",data)
+    da2=model.frame(formula,data)
+    namey=all.vars(formula)[1] #Y
+    nameaux1y=all.vars(formula)
+    xz1y<- nameaux1y %in% namey
+    namexz1y=nameaux1y[xz1y==FALSE]
+    da2=da2[namexz1y]
+    Z=NULL
+    if(dim(da2)[2]==1){X=NULL
+    }else{
+      nameaux1=all.vars(formula)
+      nameaux1=nameaux1[-1]
+      xz1<- nameaux1 %in% "Event"
+      namexz1=nameaux1[xz1==FALSE]
+      if(length(namexz1)==0){X=NULL}else{X=da2[namexz1]}
+    }
+    Break=GridP(Y, Event, nT = nBreaks)
+  }else{
+    Event=NULL
+    # End Event
+    namey=all.vars(formula)[1] #Y
+    Y=get(namey,data)   # Y
+    #Y
+    #names(data)=c("Y","X1","Z1","Z2","Z3")
+    #fz <- Y~X1+Z1+Z2+Z3
+    if(is.null(pz)){
+      da2=model.frame(formula,data)
+      namey=all.vars(formula)[1] #Y
+      nameaux1y=all.vars(formula)
+      xz1y<- nameaux1y %in% namey
+      namexz1y=nameaux1y[xz1y==FALSE]
+      if(dim(da2[namexz1y])[2]==0){X=NULL}else{da2=da2[namexz1y];X=da2}
+      Z=NULL
+    }else{
+      #if(pz!=NULL){
+      #names(da1)=c("Y","X1","Z1","Z2","Z3")
+      #fz <- Y~X1+Z1+Z2+Z3
+      namesz=paste("Z",1:pz,sep="")
+      da2=model.frame(formula,da1)
+      Z=da2[namesz]
+      #Z
+      nameaux=all.vars(formula)
+      nameaux=nameaux[-1]
+      xz<- nameaux %in% namesz
+      namexz=nameaux[xz==FALSE]
+      if(dim(da2[namexz])[2]==0){X=NULL}else{X=da2[namexz]}
+      #X
+      #}
+    }
+  }
+  Yt<-Y
+  Xt<-X
+  Zt<-Z
+ # cat("Yt=",Yt)
+#  print(Xt)
+#  print(Zt)
+#  print(Event)
+  ###################################################################################
+  ###################################################################################
+  ###################################################################################
+  
 
 # DataFrame:  
 #dataf<-data  
@@ -36,104 +120,103 @@ SmoothingF <- function(formula, data,na.action="na.omit",pz=NULL,nBreaks=NULL,
 
 #attach(dataf)
 
-if(model=="PEM"){
-#Event=get(names(dataf)[2])
-dataf<-data  
-dataf<-dataf[c(all.vars(formula)[1],colnames(data)[2],all.vars(formula)[-1])]
-#Dataframe data
-if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
-if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
+#if(model=="PEM"){
+##Event=get(names(dataf)[2])
+#dataf<-data  
+#dataf<-dataf[c(all.vars(formula)[1],colnames(data)[2],all.vars(formula)[-1])]
+##Dataframe data
+#if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
+#if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
 
+##dataf<-dataf[all.vars(formula)]
+##Yt=get(names(dataf)[1])
+#Ytdd=dataf[[colnames(dataf)[1]]]
+#Eventdd=dataf[[colnames(dataf)[2]]]
+#Breakdd=GridP(Ytdd, Eventdd, nT = nBreaks)
+#Event<-Eventdd
+#Break<-Breakdd
+#Xtdd=NULL
+#Ztdd=NULL
+#if(is.null(pz)){
+#if(dim(dataf)[2]>2){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-2
+#Xtdd=matrix(0,nnnd,ppd)
+#for(i in 1:ppd){
+##Xt[,i]=get(names(dataf)[i+2])
+#Xtdd[,i]=dataf[[names(dataf)[i+2]]] 
+
+#}
+#}
+#}
+# if(is.null(pz)!=TRUE){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-2-pz
+#Xtdd=matrix(0,nnnd,ppd)
+#for(i in 1:ppd){
+##Xt[,i]=get(names(dataf)[i+2])
+#Xtdd[,i]=dataf[[names(dataf)[i+2]]]  
+#}
+#Ztdd=matrix(0,nnnd,pz)
+#for(j in 1:pz){
+##Zt[,j]=get(names(dataf)[j+ppd+2])
+#Ztdd[,j]=dataf[[names(dataf)[j+ppd+2]]]
+#}
+#}
+#}
+
+#if(model!="PEM"){
+#dataf<-data  
 #dataf<-dataf[all.vars(formula)]
-#Yt=get(names(dataf)[1])
-Ytdd=dataf[[colnames(dataf)[1]]]
-Eventdd=dataf[[colnames(dataf)[2]]]
-Breakdd=GridP(Ytdd, Eventdd, nT = nBreaks)
-Event<-Eventdd
-Break<-Breakdd
-Xtdd=NULL
-Ztdd=NULL
-if(is.null(pz)){
-if(dim(dataf)[2]>2){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-2
-Xtdd=matrix(0,nnnd,ppd)
-for(i in 1:ppd){
-#Xt[,i]=get(names(dataf)[i+2])
-Xtdd[,i]=dataf[[names(dataf)[i+2]]] 
+#Event<-NULL
+#Break<-NULL
 
-}
-}
-}
- if(is.null(pz)!=TRUE){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-2-pz
-Xtdd=matrix(0,nnnd,ppd)
-for(i in 1:ppd){
-#Xt[,i]=get(names(dataf)[i+2])
-Xtdd[,i]=dataf[[names(dataf)[i+2]]]  
+##Dataframe data
+#if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
+#if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
+#Ytdd=dataf[[colnames(dataf)[1]]]
+#Xtdd=NULL
+#Ztdd=NULL
+#if(is.null(pz)){
+#if(dim(dataf)[2]>1){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-1
+#Xtdd=matrix(0,nnnd,ppd)
+#for(i in 1:ppd){
+##Xt[,i]=get(names(dataf)[i+1])
+###print(get(names(dataf)[i+1]))
+#Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
 
-}
-Ztdd=matrix(0,nnnd,pz)
-for(j in 1:pz){
-#Zt[,j]=get(names(dataf)[j+ppd+2])
-Ztdd[,j]=dataf[[names(dataf)[j+ppd+2]]]
-}
-}
-}
-
-if(model!="PEM"){
-dataf<-data  
-dataf<-dataf[all.vars(formula)]
-Event<-NULL
-Break<-NULL
-
-#Dataframe data
-if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
-if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
-Ytdd=dataf[[colnames(dataf)[1]]]
-Xtdd=NULL
-Ztdd=NULL
-if(is.null(pz)){
-if(dim(dataf)[2]>1){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-1
-Xtdd=matrix(0,nnnd,ppd)
-for(i in 1:ppd){
-#Xt[,i]=get(names(dataf)[i+1])
-##print(get(names(dataf)[i+1]))
-Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
-
-}
-}
-}
-if(is.null(pz)!=TRUE){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-1-pz
-if(ppd>=1){
-Xtdd=matrix(0,nnnd,ppd)
-for(i in 1:ppd){
-#Xt[,i]=get(names(dataf)[i+1])
-Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
-}
-}
-if(pz>=1){
-Ztdd=matrix(0,nnnd,pz)
-for(j in 1:pz){
-#Zt[,j]=get(names(dataf)[j+ppd+1])
-Ztdd[,j]=dataf[[names(dataf)[j+ppd+1]]]
-}
-}
-}
-}
-Yt<-Ytdd
-Xt<-Xtdd
-Zt<-Ztdd
-#detach(dataf)
-#print(Yt)
-#print(Xt)
-#print(Zt)
-
+#}
+#}
+#}
+#if(is.null(pz)!=TRUE){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-1-pz
+#if(ppd>=1){
+#Xtdd=matrix(0,nnnd,ppd)
+#for(i in 1:ppd){
+##Xt[,i]=get(names(dataf)[i+1])
+#Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
+#}
+#}
+#if(pz>=1){
+#Ztdd=matrix(0,nnnd,pz)
+#for(j in 1:pz){
+##Zt[,j]=get(names(dataf)[j+ppd+1])
+#Ztdd[,j]=dataf[[names(dataf)[j+ppd+1]]]
+#}
+#}
+#}
+#}
+#Yt<-Ytdd
+#Xt<-Xtdd
+#Zt<-Ztdd
+##detach(dataf)
+##print(Yt)
+##print(Xt)
+##print(Zt)
+###################################################################################
 
 
 if(Type!="Marg" && Type!="Cond")stop("Bad input for Type argument.")
@@ -1072,7 +1155,5 @@ return(list(summarylambda,MeanSmoothaux))
 ################################################################################   
 }#End IfElse Cond.
  }
- SmoothingF <- cmpfun(SmoothingF)
-
 ##########################################################
 

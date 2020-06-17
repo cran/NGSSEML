@@ -76,22 +76,17 @@ Weibull, Generalized Gamma, Laplace, GED and PEM models.
      }
  
   \item{Proc}{
-     the chosen distribution of the lantent states. There are 2 options: 
-     conditional ("Cond") on the static parameters and marginal ("Marg"). The default 
-     is conditional ("Marg").
-} 
-  \item{Type}{
-     the latent states distribution to be returned. There are 2 options: 
+   the latent states distribution to be returned. There are 2 options: 
      the smoothed ("Smooth") and filtering ("Filter") distributions.
-
-       the chosen distribution of the lantent states. There are 2 options: 
+ } 
+  \item{Type}{
+    the chosen distribution of the lantent states. There are 2 options: 
      conditional ("Cond") on the static parameters and marginal ("Marg"). The default 
-     is conditional ("Marg").
+     is "Marg". 
+
 } 
  \item{distl}{
-     the chosen distribution of the lantent states. There are 2 options: 
-     conditional on the static parameters and marginal ("Marg"). The default 
-     is conditional ("Cond").
+     the chosen distribution of the lantent states in the filtering procedure. There are 2 options: the one-step ahead ("PRED") and filtering ("Filter") distributions. The default is "PRED". 
 }
 \item{a0}{
     the shape parameter of the initial Gamma distribution. Optional argument.
@@ -207,14 +202,15 @@ p=length(StaPar)
 nn=length(Ytm)
 a0=0.01
 b0=0.01
-pointss=5    ### points
-nsamplex=50 ## Sampling posterior
+pointss= 4   ### points
+nsamplex=25 ## Sampling posterior
 ci=0.95       # Cred. level
-fitbayes=ngssm.bayes(Ytm~1,data=data.frame(Ytm),model=model,pz=NULL,
+fitbayes<-ngssm.bayes(Ytm~1,data=data.frame(Ytm),model=model,pz=NULL,
 StaPar=StaPar,a0=a0,b0=b0,prw=c(1,1),
 prnu=c(0.01,0.01),ci=ci,pointss=pointss,nsamplex=nsamplex,
 postplot=FALSE,contourplot=FALSE,LabelParTheta=LabelParTheta)
-posts=fitbayes[[2]]
+#postaux<-fitbayes$samplepost[,]
+posts<-fitbayes$samplepost
 ############
 #Smoothing:
 ############

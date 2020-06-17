@@ -11,8 +11,9 @@ the static parameters of the model.
 }
 \usage{
 ngssm.mle(formula, data,na.action="na.omit",pz=NULL,
-nBreaks=NULL,model="Poisson",StaPar=NULL,amp=FALSE,
-a0=0.01,b0=0.01,ci=0.95,LabelParTheta=NULL,verbose=TRUE)
+nBreaks=NULL,model="Poisson",StaPar=NULL,amp=FALSE,a0=0.01,
+b0=0.01,ci=0.95,LabelParTheta=NULL,verbose=TRUE,method="BFGS",hessian=TRUE,
+control=list(maxit = 30000, temp = 2000, trace = FALSE,REPORT = 500))
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -80,7 +81,19 @@ Default: a0=0.01.
 \item{verbose}{
      A logical variable that gives the user the output of the model fit in the console. 
      Default: TRUE. Optional argument.
-}  
+}
+\item{method}{
+     A variable that allows choosing a  maximization algorithm of the optim function. 
+     Default: TRUE. Optional argument.
+} 
+\item{hessian}{
+     A logical variable that allows calculating the hessian matrix numerically. 
+     Default: TRUE. Optional argument.
+} 
+\item{control}{
+     A list of control in the optim function. 
+     Default: list(maxit = 30000, temp = 2000, trace = FALSE,REPORT = 500). Optional argument.
+} 
   
 }
 \details{
@@ -146,34 +159,17 @@ Xtm=NULL
 Ztm=NULL
 model="PEM"
 amp=FALSE
-Eventm=gte_data$V2        # Event: failure, 1.
-Break=GridP(Ytm, Eventm, nT = NULL)
+Event=gte_data$V2        # Event: failure, 1.
+Break=NGSSEML:::GridP(Ytm, Event, nT = NULL)
 #LabelParTheta=c("w")
 StaPar=c(0.73)
 a0=0.01
 b0=0.01
 ci=0.95
-fit=ngssm.mle(Ytm~1,data=data.frame(Ytm,Eventm),model=model,nBreaks=NULL,
+fit=ngssm.mle(formula=Ytm~Event,data=data.frame(Ytm,Event),model=model,nBreaks=NULL,
 amp=amp,a0=a0,b0=b0,ci=ci)
-
 ##########################################################
-##
-##  SR GAMMA MODEL: the SYS1 data
-##
-##########################################################
-# MLE estimation:
-#library(NGSSEML)
-data(sys1_data)
-Ytm=sys1_data[,1]+0.00001
-Xtm=sys1_data[,2]   # Xt as matrix always!
-Zt=NULL
-model="SRWeibull"
-#LabelParTheta=c("w","alpha","Beta1")
-StaPar=c(0.9,0.7,0.01)
-fit=ngssm.mle(Ytm~Xtm,data=data.frame(Ytm,Xtm),
-model=model,pz=NULL,StaPar=StaPar,a0=0.01,b0=0.01,ci=0.95)
-
-}
+} 
 %% Add one or more standard keywords, see file 'KEYWORDS' in the
 %% R documentation directory.
 \keyword{State space model}

@@ -6,10 +6,11 @@
 
 ##
 ##
-
-LikeF <- function(formula, data,na.action="na.omit",pz=NULL,
-nBreaks=NULL,model="Poisson",StaPar=NULL,a0=0.01,b0=0.01,amp=FALSE){
-
+##
+##
+#'@noRd
+LikeF <- function(Yt,Xt,Zt=NULL,Event=NULL,Break=NULL,na.action="na.omit",
+model="Poisson",StaPar=NULL,a0=0.01,b0=0.01,amp=FALSE){
 
 # DataFrame:  
 #dataf<-data  
@@ -21,103 +22,104 @@ nBreaks=NULL,model="Poisson",StaPar=NULL,a0=0.01,b0=0.01,amp=FALSE){
 oldoptions <-options(warn=-1)
 on.exit(options(oldoptions)) 
 
-if(model=="PEM"){
-#Event=get(names(dataf)[2])
-dataf<-data  
-dataf<-dataf[c(all.vars(formula)[1],colnames(data)[2],all.vars(formula)[-1])]
-#Dataframe data
-if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
-if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
+#if(model=="PEM"){
+##Event=get(names(dataf)[2])
+#dataf<-data  
+#dataf<-dataf[c(all.vars(formula)[1],colnames(data)[2],all.vars(formula)[-1])]
+##Dataframe data
+#if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
+#if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
 
-#dataf<-dataf[all.vars(formula)]
-#Yt=get(names(dataf)[1])
-Ytdd=dataf[[colnames(dataf)[1]]]
-Eventdd=dataf[[colnames(dataf)[2]]]
-Breakdd=GridP(Ytdd, Eventdd, nT = nBreaks)
-iik=2
-Event<-Eventdd
-Break<-Breakdd
-Xtdd=NULL
-Ztdd=NULL
-if(is.null(pz)){
-if(dim(dataf)[2]>2){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-iik
-Xtdd=matrix(0,nnnd,ppd)
-for(i in 1:ppd){
+##dataf<-dataf[all.vars(formula)]
+##Yt=get(names(dataf)[1])
+#Ytdd=dataf[[colnames(dataf)[1]]]
+#Eventdd=dataf[[colnames(dataf)[2]]]
+#Breakdd=GridP(Ytdd, Eventdd, nT = nBreaks)
+#iik=2
+#Event<-Eventdd
+#Break<-Breakdd
+#Xtdd=NULL
+#Ztdd=NULL
+#if(is.null(pz)){
+#if(dim(dataf)[2]>2){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-iik
+#Xtdd=matrix(0,nnnd,ppd)
+#for(i in 1:ppd){
+##Xt[,i]=get(names(dataf)[i+2])
+#Xtdd[,i]=dataf[[names(dataf)[i+iik]]] 
+
+#}
+#}
+#}
+# if(is.null(pz)!=TRUE){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-2-pz
+#if(ppd>=1){
+#Xtdd=matrix(0,nnnd,ppd)
+#for(i in 1:ppd){
 #Xt[,i]=get(names(dataf)[i+2])
-Xtdd[,i]=dataf[[names(dataf)[i+iik]]] 
+#Xtdd[,i]=dataf[[names(dataf)[i+2]]]  
+#}
+#}
+#if(pz>=1){
+#Ztdd=matrix(0,nnnd,pz)
+#for(j in 1:pz){
+##Zt[,j]=get(names(dataf)[j+ppd+2])
+#Ztdd[,j]=dataf[[names(dataf)[j+ppd+2]]]
+#}
+#}
+#}
+#}
 
-}
-}
-}
- if(is.null(pz)!=TRUE){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-2-pz
-if(ppd>=1){
-Xtdd=matrix(0,nnnd,ppd)
-for(i in 1:ppd){
-#Xt[,i]=get(names(dataf)[i+2])
-Xtdd[,i]=dataf[[names(dataf)[i+2]]]  
-}
-}
-if(pz>=1){
-Ztdd=matrix(0,nnnd,pz)
-for(j in 1:pz){
-#Zt[,j]=get(names(dataf)[j+ppd+2])
-Ztdd[,j]=dataf[[names(dataf)[j+ppd+2]]]
-}
-}
-}
-}
-
-if(model!="PEM"){
-dataf<-data  
-dataf<-dataf[all.vars(formula)]
-Event<-NULL
-Break<-NULL
+#if(model!="PEM"){
+##dataf<-data  
+##dataf<-dataf[all.vars(formula)]
+#Event<-NULL
+#Break<-NULL
 
 #Dataframe data
-if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
-if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
-Ytdd=dataf[[colnames(dataf)[1]]]
-Xtdd=NULL
-Ztdd=NULL
-if(is.null(pz)){
-if(dim(dataf)[2]>1){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-1
-Xtdd=matrix(0,nnnd,ppd)
+#if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
+#if(is.data.frame(data)==FALSE)stop("The argument needs to be a data frame.")
+#Ytdd=dataf[[colnames(dataf)[1]]]
+#Xtdd=NULL
+#Ztdd=NULL
+#if(is.null(pz)){
+#if(dim(dataf)[2]>1){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-1
+#Xtdd=matrix(0,nnnd,ppd)
 
-for(i in 1:ppd){
-#Xt[,i]=get(names(dataf)[i+1])
-Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
-}
+#for(i in 1:ppd){
+##Xt[,i]=get(names(dataf)[i+1])
+#Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
+#}
 
-}
-}
-if(is.null(pz)!=TRUE){
-nnnd=dim(dataf)[1]
-ppd=dim(dataf)[2]-1-pz
-if(ppd>=1){
-Xtdd=matrix(0,nnnd,ppd)
-for(i in 1:ppd){
-#Xt[,i]=get(names(dataf)[i+1])
-Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
-}
-}
-if(pz>=1){
-Ztdd=matrix(0,nnnd,pz)
-for(j in 1:pz){
+#}
+#}
+#if(is.null(pz)!=TRUE){
+#nnnd=dim(dataf)[1]
+#ppd=dim(dataf)[2]-1-pz
+#if(ppd>=1){
+#Xtdd=matrix(0,nnnd,ppd)
+#for(i in 1:ppd){
+##Xt[,i]=get(names(dataf)[i+1])
+#Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
+#}
+#}
+#if(pz>=1){
+#Ztdd=matrix(0,nnnd,pz)
+#for(j in 1:pz){
 #Zt[,j]=get(names(dataf)[j+ppd+1])
-Ztdd[,j]=dataf[[names(dataf)[j+ppd+1]]]
-}
-}
-}
-}
-Yt<-Ytdd
-Xt<-Xtdd
-Zt<-Ztdd
+#Ztdd[,j]=dataf[[names(dataf)[j+ppd+1]]]
+#}
+#}
+#}
+#}
+#Yt<-Ytdd
+#Xt<-Xtdd
+#Zt<-Ztdd
+##########################################################
 #detach(dataf)
 #print(Yt)
 #print(Xt)
@@ -750,6 +752,6 @@ return(-sum(l))
   }#End PEM/PH Model
 
 }
-LikeF <- cmpfun(LikeF)
+##########################################################
 
 

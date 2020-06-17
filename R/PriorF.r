@@ -1,3 +1,6 @@
+##
+##
+#'@noRd
 PriorF<-function(StaPar,model="Poisson",prw=c(1,1),prnu=NULL,prchi=NULL,prmu=NULL,prbetamu=NULL,
 prbetasigma=NULL){ # specify this function out as an input!
 

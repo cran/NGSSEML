@@ -196,7 +196,6 @@ the parametric space of the model for the ARMS function in the arguments 'lower'
 
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
-\code{\link{PriorF}}
 \code{\link{SmoothingF}}
 \code{\link{ngssm.mle}}
 
@@ -212,49 +211,28 @@ library(NGSSEML)
 #### Inputs: 
 data(gte_data)
 Ytm=gte_data$V1
-Eventm=gte_data$V2   # Event: failure, 1.
-Breakm=GridP(Ytm, Eventm, nT = NULL)
+Event=gte_data$V2   # Event: failure, 1.
+Breakm=NGSSEML:::GridP(Ytm, Event, nT = NULL)
 Xtm=NULL
 Ztm=NULL
 model="PEM"
 amp=FALSE
 #LabelParTheta=c("w")
-StaPar=c(0.5)
+StaPar=c(0.9)
 p=length(StaPar)
 nn=length(Ytm)
 a0=0.01
 b0=0.01
 #pointss=500000    ### points
-pointss=10    ### points
-nsamplex=1000 ## Sampling posterior
+pointss=6    ### points
+nsamplex=300 ## Sampling posterior
 ci=0.95
 alpha=1-ci
 #Fit:
-fitbayes=ngssm.bayes(Ytm~1,data=data.frame(Ytm,Eventm),model=model,pz=NULL,
-StaPar=StaPar,amp=amp,a0=a0,b0=b0,prw=c(1,1),prnu=NULL,prchi=NULL,prmu=NULL,
+fitbayes=ngssm.bayes(Ytm~Event,data=data.frame(Ytm,Event),model=model,pz=NULL,
+amp=amp,a0=a0,b0=b0,prw=c(1,1),prnu=NULL,prchi=NULL,prmu=NULL,
 prbetamu=NULL,prbetasigma=NULL,ci=ci,pointss=pointss,nsamplex=nsamplex,
 postplot=FALSE,contourplot=FALSE)
-
-################################################################################
-##
-##  SR WEIBULL MODEL: the SYS1 data
-##
-################################################################################
-#library(NGSSEML)
-#### Defaults values (NULL): 
-#### Inputs: 
-data(sys1_data)
-Ytm=sys1_data[,1]+0.00001
-Xtm=sys1_data[,2]
-model="SRWeibull"   
-#LabelParTheta=c("w","nu","Beta")
-pointss=5    ### points
-##Fit:
-StaPar=c(0.98,0.75,0.02)
-fitbayes=ngssm.bayes(Ytm~Xtm,data=data.frame(Ytm,Xtm),
-model=model,pz=NULL,StaPar=StaPar,
-prw=c(1,1),prnu=c(0.1,0.1),prbetamu=rep(0,1),prbetasigma=diag(100,1,1),
-pointss=pointss,nsamplex=3000,postplot=FALSE,contourplot=FALSE)
 ################################################################################
 ################################################################################
 }

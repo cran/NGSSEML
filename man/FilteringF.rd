@@ -112,7 +112,6 @@ The model options are the Poisson, Normal, Laplace, GED, Gamma, Weibull and Gene
 
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
-\code{\link{LikeF}}
 \code{\link{SmoothingF}}
 
 }
