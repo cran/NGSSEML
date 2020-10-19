@@ -1,4 +1,4 @@
-3f5dc9827ba55ca13dc174f622b16fed *DESCRIPTION
+8c65b9a40884a7dd11f1290ae3a2344f *DESCRIPTION
 de7dec8257fc59fae215ded83ba8c59c *NAMESPACE
 fd9ec343421e71774b68fce8f216ede6 *R/FilteringF.r
 72ef2eb52121d97da2ec1ab181af5387 *R/GridP.r
@@ -13,9 +13,9 @@ b2b8aa831627d79d7f4172f4b3d799b2 *R/PriorF.r
 0413ed10a168e8b1f55354129c083ef9 *R/TTime.r
 01b18f9712205f36acb31a19380b453e *R/gridfunction.r
 a66e2b7960ccd2391c189c310d54e394 *R/ngssm.bayes.p.r
-57d4ee0999b8bc5524ac68b26012b707 *R/ngssm.bayes.r
+23de0936627d3a3b8c8fb78db9d497a0 *R/ngssm.bayes.r
 7232c3e01f99c583ec684274a2f2037b *R/ngssm.mle.p.r
-0729da877e7becdb283749864f53b4fc *R/ngssm.mle.r
+fc2fde102fef954306a853ee42be20ba *R/ngssm.mle.r
 13846e09c8d90e862cacba5197f6faba *R/predict.ngssm.bayes.p.r
 d907ed1d4341a0da699558246fc6f6fd *R/predict.ngssm.mle.p.r
 9f2c78ceeba050eda5a344fd658b912f *R/summary.ngssm.bayes.r

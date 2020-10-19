@@ -613,6 +613,7 @@ ngssm.mle<-function(formula, data,
       MIFopt[1,1]=MIFopt[1,1]*(((exp(-exp(estopt[1])))*(-exp(estopt[1])))^2)
       MIFopt
       estopt[1]=exp(-exp(estopt[1]))
+     # print(estopt)
       LI=estopt-1*(qnorm((1+ci)/2))*sqrt(diag(MIFopt))
       LS=estopt+1*(qnorm((1+ci)/2))*sqrt(diag(MIFopt))
       #LI[1]=exp(-exp(estopt[1]+1*(qnorm((1+ci)/2))*sqrt((MIFopt[1,1]))))
@@ -666,7 +667,8 @@ ngssm.mle<-function(formula, data,
     #cat("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n","\nNGSSMEL Package:","MLE -",model,"\n")
     p=length(estopt)
     nn=length(Yt)
-    estopt[1]=exp(-exp(estopt[1]))
+  #  estopt[1]=exp(-exp(estopt[1]))
+   # print(estopt)
     if(hessian==TRUE){
       mfit<-matrix(c(estopt,sqrt(diag(MIFopt)),estopt/sqrt(diag(MIFopt)),2*(1-pnorm(abs(estopt/sqrt(diag(MIFopt))))),LI,LS),p,6)
       colnames(mfit)=c("Est","SE","z","P-value","Lower","Upper")
@@ -1078,7 +1080,8 @@ ngssm.mle<-function(formula, data,
     pnn<-length(obj$fitted.values)
     obj$x<-1:pnn
     #names(obj$x)<-c("Order obs.")
-    obj$summary<-list(cat("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n","\nNGSSEML Package:","MLE -",model,"\n"),ngssm.list) #colocar a lista que criei de output
+    #obj$summary<-list(cat("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n","\nNGSSEML Package:","MLE -",model,"\n"),ngssm.list) #colocar a lista que criei de output
+    obj$summary<-ngssm.list #colocar a lista que criei de output
     class(obj) = "ngssm.mle"
     return(obj) 
     

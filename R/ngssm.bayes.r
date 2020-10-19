@@ -2885,7 +2885,7 @@ resultsopt=tryCatch(optim(StaPar1, hessian=TRUE,LikeF2,
 method="BFGS",na.action=na.action,Yt=Yt,Xt=Xt,Zt=Zt,Break=Break,Event=Event,
 a0=a0,b0=b0,model=model,
 control = list(maxit = 30000, temp = 2000,trace = FALSE,REPORT = 500)), error = c)
-print(resultsopt)
+#print(resultsopt)
 if(is.null(resultsopt$convergence)){stop("Convergence error! Bad inputs! Sorry!")}else{
 if(resultsopt$convergence!=0)stop("Convergence error! Bad inputs! Sorry!")}
 estopt=resultsopt$par     # Point Estimates:
