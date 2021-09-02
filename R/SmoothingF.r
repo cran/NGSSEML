@@ -266,7 +266,7 @@ colnames(summarylambda)=c("Mean","Median","Perc1","Perc2")
 ## GRAFICO SOMBREADO
 ##
 ####################################################################
- dev.new()
+# dev.new()
 n1=length(Medianbayes)
 ytm=matrix(0,n1,3)
 ytm[,1]=Medianbayes
@@ -686,7 +686,7 @@ return(list(summarylambda,MeanSmoothaux))
           ## GRAFICO SOMBREADO
           ##
           ####################################################################
-          dev.new()
+        #  dev.new()
            n1=length(Median)
            ytm=matrix(0,n1,3)
            ytm[,1]=Median
@@ -939,7 +939,7 @@ return(list(summarylambda,MeanSmoothaux))
           ## GRAFICO SOMBREADO
           ##
           ####################################################################
-           dev.new()
+          # dev.new()
            n1=length(Median)
            ytm=matrix(0,n1,3)
            ytm[,1]=Median
@@ -1121,7 +1121,7 @@ return(list(summarylambda,MeanSmoothaux))
           ## GRAFICO SOMBREADO
           ##
           ####################################################################
-           dev.new()
+         #  dev.new()
            n1=length(Median)
            ytm=matrix(0,n1,3)
            ytm[,1]=Median

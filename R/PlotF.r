@@ -2,7 +2,7 @@
 
 ##########################################################################################
 ##
-##   PLOT FUNCTION
+##   PLOT FUNCTION VERSION 2
 ##
 ##########################################################################################
 ##
@@ -10,10 +10,20 @@
 #'@export
 PlotF<-function(formula, data,na.action="na.omit",pz=NULL,nBreaks=NULL,
 plotYt=TRUE,axisxdate=NULL,transf=1,model="Poisson",posts,Proc="Smooth",Type="Marg",
-distl="PRED",a0=0.01,b0=0.01,ci=0.95,startdate=NULL,enddate=NULL,Freq=NULL,
-Typeline='l',cols=c("black","blue","lightgrey"),xxlab="t",
-yylab=expression(paste(hat(mu)[t])),xxlim=NULL,yylim=NULL,Lty=c(1,2,1),
-Lwd=c(2,2,2),Cex=0.68){
+distl="PRED",a0=0.01,b0=0.01,ci=0.95,startdate=NULL,enddate=NULL,Freq=NULL,...){
+#argumentsdesignplot <- list(...)
+  arg <- list(...)
+## ... = typeline='l', arg1
+#cols="black", arg2
+ #      "blue",
+#       "lightgrey"),
+#xxlab="t", arg3
+#  yylab=expression(paste(hat(mu)[t])), arg4
+#,xxlim=NULL, arg5
+#yylim=NULL, arg6
+#Lty=c(1,2,1), arg7
+##  Lwd=c(2,2,2), arg8
+#Cex=0.68, arg9
 
 
 #argument breaks ==FALSE or TRUE
@@ -115,10 +125,10 @@ Lwd=c(2,2,2),Cex=0.68){
 #  print(Event)
   ###################################################################################
   ###################################################################################
-  ###################################################################################  
-  
-# DataFrame:  
-#dataf<-data  
+  ###################################################################################
+
+# DataFrame:
+#dataf<-data
 #dataf<-dataf[all.vars(formula)]
 #Dataframe data
 #if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
@@ -128,7 +138,7 @@ Lwd=c(2,2,2),Cex=0.68){
 
 #if(model=="PEM"){
 ##Event=get(names(dataf)[2])
-#dataf<-data  
+#dataf<-data
 #dataf<-dataf[c(all.vars(formula)[1],colnames(data)[2],all.vars(formula)[-1])]
 ##Dataframe data
 #if(length(all.vars(formula))> dim(data)[2])stop("Check the formula and data.")
@@ -150,7 +160,7 @@ Lwd=c(2,2,2),Cex=0.68){
 #Xtdd=matrix(0,nnnd,ppd)
 #for(i in 1:ppd){
 ##Xt[,i]=get(names(dataf)[i+2])
-#Xtdd[,i]=dataf[[names(dataf)[i+2]]] 
+#Xtdd[,i]=dataf[[names(dataf)[i+2]]]
 
 #}
 #}
@@ -162,7 +172,7 @@ Lwd=c(2,2,2),Cex=0.68){
 #Xtdd=matrix(0,nnnd,ppd)
 #for(i in 1:ppd){
 ##Xt[,i]=get(names(dataf)[i+2])
-#Xtdd[,i]=dataf[[names(dataf)[i+2]]]  
+#Xtdd[,i]=dataf[[names(dataf)[i+2]]]
 #}
 #}
 #if(pz>=1){
@@ -176,7 +186,7 @@ Lwd=c(2,2,2),Cex=0.68){
 #}
 
 #if(model!="PEM"){
-#dataf<-data  
+#dataf<-data
 #dataf<-dataf[all.vars(formula)]
 #Event<-NULL
 #Break<-NULL
@@ -195,7 +205,7 @@ Lwd=c(2,2,2),Cex=0.68){
 #for(i in 1:ppd){
 ##Xt[,i]=get(names(dataf)[i+1])
 ###print(get(names(dataf)[i+1]))
-#Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
+#Xtdd[,i]=dataf[[names(dataf)[i+1]]]
 
 #}
 #}
@@ -207,7 +217,7 @@ Lwd=c(2,2,2),Cex=0.68){
 #Xtdd=matrix(0,nnnd,ppd)
 #for(i in 1:ppd){
 ##Xt[,i]=get(names(dataf)[i+1])
-#Xtdd[,i]=dataf[[names(dataf)[i+1]]]  
+#Xtdd[,i]=dataf[[names(dataf)[i+1]]]
 #}
 #}
 #if(pz>=1){
@@ -227,7 +237,7 @@ Lwd=c(2,2,2),Cex=0.68){
 ##print(Xt)
 ##print(Zt)
 ###################################################################################
-  
+
 
 
 if(is.null(Xt)==FALSE){if(is.matrix(Xt)==FALSE){Xt=as.matrix(Xt)}}
@@ -268,34 +278,34 @@ at=axisxdate
 d=at
 #if(is.null(startdate)==FALSE & is.null(enddate)==FALSE){
 #dat=seq(d[1], d[length(d)], by="month")}
-if(is.null(yylim)|is.null(yylim)){
-plot(at,ytm[,2],xlab=xxlab,ylab=yylab,type=Typeline,axes=FALSE,ylim=c(minyt,maxyt),col="white")
+if(is.null(arg[[6]])|is.null(arg[[6]])){
+plot(at,ytm[,2],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],axes=FALSE,ylim=c(minyt,maxyt),col="white")
 seq1=at
 seq2=sort(at,decreasing = TRUE)
 xxx=sort(at,decreasing = TRUE)
-polygon(c(at, xxx),c((ytm[,4]),rev((ytm[,3]))),ylim=c(minyt,maxyt),col=cols[3],border=cols[3])
+polygon(c(at, xxx),c((ytm[,4]),rev((ytm[,3]))),ylim=c(minyt,maxyt),col=arg[[2]][3],border=arg[[2]][3])
 if(plotYt==TRUE){
 par(new=TRUE)
-plot(at,ytm[,1],xlab=xxlab,ylab=yylab,type=Typeline,axes=TRUE,ylim=c(minyt,maxyt),lty=c(Lty[1]),
-lwd=c(Lwd[1]),col=c(cols[1]))
+plot(at,ytm[,1],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],axes=TRUE,ylim=c(minyt,maxyt),lty=arg[[7]][1],
+lwd=arg[[8]][1],col=arg[[2]][1])
 }
 par(new=TRUE)
-plot(at,ytm[,2],xlab=xxlab,ylab=yylab,type=Typeline,axes=TRUE,ylim=c(minyt,maxyt),lty=c(Lty[2]),
-lwd=c(Lwd[2]),col=c(cols[2]),cex=Cex)
+plot(at,ytm[,2],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],axes=TRUE,ylim=c(minyt,maxyt),lty=arg[[7]][2],
+lwd=arg[[8]][2],col=arg[[2]][2],cex=arg[[9]])
 }else{
-plot(at,ytm[,2],xlab=xxlab,ylab=yylab,type=Typeline,axes=FALSE,ylim=c(yylim[1],yylim[2]),col="white",cex=Cex)
+plot(at,ytm[,2],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],axes=FALSE,ylim=arg[[6]],col="white",cex=arg[[9]])
 seq1=at
 seq2=sort(at,decreasing = TRUE)
 xxx=sort(at,decreasing = TRUE)
-polygon(c(at, xxx),c((ytm[,4]),rev((ytm[,3]))),ylim=c(yylim[1],yylim[2]),col=cols[3],border=cols[3])
+polygon(c(at, xxx),c((ytm[,4]),rev((ytm[,3]))),ylim=arg[[6]],col=arg[[2]][3],border=arg[[2]][3])
 if(plotYt==TRUE){
 par(new=TRUE)
-plot(at,ytm[,1],xlab=xxlab,ylab=yylab,type=Typeline,ylim=c(yylim[1],yylim[2]),axes=TRUE,lty=c(Lty[1]),
-lwd=c(Lwd[1]),col=c(cols[1]),cex=Cex)
+plot(at,ytm[,1],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],ylim=arg[[6]],axes=TRUE,lty=arg[[7]][1],
+lwd=arg[[8]][1],col=arg[[2]][1],cex=arg[[9]])
 }
 par(new=TRUE)
-plot(at,ytm[,2],xlab=xxlab,ylab=yylab,type=Typeline,ylim=c(yylim[1],yylim[2]),axes=TRUE,lty=c(Lty[2]),
-lwd=c(Lwd[2]),col=c(cols[2]),cex=Cex)
+plot(at,ytm[,2],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],ylim=arg[[6]],axes=TRUE,lty=arg[[7]][2],
+lwd=arg[[8]][2],col=arg[[2]][2],cex=arg[[9]])
 
 }
 #axis.Date(1,at=dat,labels=dat, las = 1)
@@ -318,10 +328,10 @@ lwd=c(Lwd[2]),col=c(cols[2]),cex=Cex)
 ##}
 if(plotYt==TRUE){
 legend("topright", c("Time Series","Smoothed Mean","95 CI"),
-lty=Lty,lwd=Lwd,col=cols,cex=Cex, bty="n")
+lty=arg[[7]],lwd=arg[[8]],col=arg[[2]],cex=arg[[9]], bty="n")
 }else{
 legend("topright", c("Smoothed Mean","95 CI"),
-lty=Lty[-1],lwd=Lwd[-1],col=cols[-1],cex=Cex, bty="n")
+lty=arg[[7]][-1],lwd=arg[[8]][-1],col=arg[[2]][-1],cex=arg[[9]], bty="n")
 }
 
 } #End Smooth
@@ -329,6 +339,7 @@ lty=Lty[-1],lwd=Lwd[-1],col=cols[-1],cex=Cex, bty="n")
 if(Proc=="Filter"){
 #Filtering:
 nn=length(Yt)
+nsamplex=dim(posts)[1]
 if(model=="PEM"){nn=length(Break)-1}
 filpar1=matrix(0,nn,nsamplex)
 #samples=1
@@ -336,10 +347,11 @@ filpar1=matrix(0,nn,nsamplex)
 for(j in 1:nsamplex){
 filparaux=FilteringF(StaPar=posts[j,],formula=formula,data=data,model=model,pz=pz,
 a0=a0,b0=b0,distl=distl,splot=FALSE)
-filpar1[,j]=((filparaux[1,]/ filparaux[2,]))
+filpar1[,j]=((filparaux[2,]/ filparaux[1,]))
 }
 filpar=apply(filpar1,1,mean)
-#filparmedian=apply(filpar1,1,median)
+#filparmedian=apply(filpar1,1,median)]
+print(filparaux)
 alpha=1-ci
 filparp1=apply(filpar1,1,function(x) quantile(x,probs=c(alpha/2),na.rm=TRUE))    #perc alpha/2
 filparp2=apply(filpar1,1,function(x) quantile(x,probs=c(1-(alpha/2)),na.rm=TRUE))   #perc 1-alpha/2
@@ -349,6 +361,7 @@ ytm=matrix(0,nn,4)
 if(model=="PEM"){}else{ytm[,1]=Yt}
 #aplicar uma transf.
 #sums=fits[[1]]
+ytm[,1]=ytm[,1]^(transf)
 ytm[,2]=filpar^(transf)
 ytm[,3]=filparp1^(transf)
 ytm[,4]=filparp2^(transf)
@@ -366,43 +379,43 @@ at=axisxdate
 d=at
 #if(is.null(startdate)==FALSE & is.null(enddate)==FALSE){
 #dat=seq(d[1], d[length(d)], by="month")}
-if(is.null(yylim)|is.null(yylim)){
-plot(at,ytm[,2],xlab=xxlab,ylab=yylab,type=Typeline,axes=FALSE,ylim=c(minyt,maxyt),col="white",cex=Cex)
+if(is.null(arg[[6]])|is.null(arg[[6]])){
+plot(at,ytm[,2],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],axes=FALSE,ylim=c(minyt,maxyt),col="white",cex=arg[[9]])
 seq1=at
 seq2=sort(at,decreasing = TRUE)
 xxx=sort(at,decreasing = TRUE)
-polygon(c(at, xxx),c((ytm[,4]),rev((ytm[,3]))),ylim=c(minyt,maxyt),col=cols[3],border=cols[3])
+polygon(c(at, xxx),c((ytm[,4]),rev((ytm[,3]))),ylim=c(minyt,maxyt),col=arg[[2]][3],border=arg[[2]][3])
 if(plotYt==TRUE){
 par(new=TRUE)
-plot(at,ytm[,1],xlab=xxlab,ylab=yylab,type=Typeline,axes=TRUE,ylim=c(minyt,maxyt),lty=c(Lty[1]),
-lwd=c(Lwd[1]),col=c(cols[1]),cex=Cex)
+plot(at,ytm[,1],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],axes=TRUE,ylim=c(minyt,maxyt),lty=arg[[7]][1],
+lwd=arg[[8]][1],col=arg[[2]][1],cex=arg[[9]])
 }
 par(new=TRUE)
-plot(at,ytm[,2],xlab=xxlab,ylab=yylab,type=Typeline,axes=TRUE,ylim=c(minyt,maxyt),lty=c(Lty[2]),
-lwd=c(Lwd[2]),col=c(cols[2]),cex=Cex)
+plot(at,ytm[,2],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],axes=TRUE,ylim=c(minyt,maxyt),lty=arg[[7]][2],
+lwd=arg[[8]][2],col=arg[[2]][2],cex=arg[[9]])
 }else{
-plot(at,ytm[,2],xlab=xxlab,ylab=yylab,type=Typeline,axes=FALSE,ylim=c(yylim[1],yylim[2]),col="white",cex=Cex)
+plot(at,ytm[,2],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],axes=FALSE,ylim=arg[[6]],col="white",cex=arg[[9]])
 seq1=at
 seq2=sort(at,decreasing = TRUE)
 xxx=sort(at,decreasing = TRUE)
-polygon(c(at, xxx),c((ytm[,4]),rev((ytm[,3]))),ylim=c(yylim[1],yylim[2]),col=cols[3],border=cols[3])
+polygon(c(at, xxx),c((ytm[,4]),rev((ytm[,3]))),ylim=arg[[6]],col=arg[[2]][3],border=arg[[2]][3])
 if(plotYt==TRUE){
 par(new=TRUE)
-plot(at,ytm[,1],xlab=xxlab,ylab=yylab,type=Typeline,ylim=c(yylim[1],yylim[2]),axes=TRUE,lty=c(Lty[1]),
-lwd=c(Lwd[2]),col=c(cols[1]),cex=Cex)
+plot(at,ytm[,1],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],ylim=arg[[6]],axes=TRUE,lty=arg[[7]][1],
+lwd=arg[[8]][2],col=arg[[2]][1],cex=arg[[9]])
 }
 par(new=TRUE)
-plot(at,ytm[,2],xlab=xxlab,ylab=yylab,type=Typeline,ylim=c(yylim[1],yylim[2]),axes=TRUE,lty=c(Lty[2]),
-lwd=c(Lwd[2]),col=c(cols[2]),cex=Cex)
+plot(at,ytm[,2],xlab=arg[[3]],ylab=arg[[4]],type=arg[[1]],ylim=arg[[6]],axes=TRUE,lty=arg[[7]][2],
+lwd=arg[[8]][2],col=arg[[2]][2],cex=arg[[9]])
 
 }
 
 if(plotYt==TRUE){
-legend("topright", c("Time Series","Filtered Mean","95 CI"),
-lty=Lty,lwd=Lwd,col=cols,cex=Cex, bty="n")
+legend("topright", c("Time Series","Filtered Mean Level","95 CI"),
+lty=arg[[7]],lwd=arg[[8]],col=arg[[2]],cex=arg[[9]], bty="n")
 }else{
 legend("topright", c("Filtered Mean","95 CI"),
-lty=Lty[-1],lwd=Lwd[-1],col=cols[-1],cex=Cex, bty="n")
+lty=arg[[7]][-1],lwd=arg[[8]][-1],col=arg[[2]][-1],cex=arg[[9]], bty="n")
 
 }
 

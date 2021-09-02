@@ -1,5 +1,5 @@
-\name{Yt}
-\alias{Yt}
+\name{Polio_data}
+\alias{Polio_data}
 \docType{data}
 \title{
 %%   ~~ data name/kind ... ~~
@@ -11,7 +11,7 @@ The Polio Data
 The data consist of
 monthly counts of poliomyelitis cases in the USA from the year 1970 to 1983.
 }
-\usage{data(Yt)}
+\usage{data(Polio_data)}
 \format{
   A data frame with 168 observations on the following 8 variables.
   
@@ -31,6 +31,6 @@ Zeger, S.L. (1988). A regression model for time series
 of counts. Biometrika 75, 621-29.
 }
 \examples{
-data(Yt)
+data(Polio_data)
 }
 \keyword{datasets}

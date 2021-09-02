@@ -1,5 +1,5 @@
-\name{Rt}
-\alias{Rt}
+\name{Return_data}
+\alias{Return_data}
 \docType{data}
 \title{
 %%   ~~ data name/kind ... ~~
@@ -10,7 +10,7 @@ Returns of the asset PETR3 (Petrobras company) in the Brazilian stock market
 The return data consist of 1999 daily observations in the period of 
 2000/01/06 to 2008/29/01.
 }
-\usage{data(Rt)}
+\usage{data(Return_data)}
 \format{
 A data frame with 1999 rows and 1 variable.
 }
@@ -27,6 +27,6 @@ http://http://finance.yahoo.com/
 https://br.advfn.com/bolsa-de-valores/bovespa/petrobras-PETR3/empresa
 }
 \examples{
-data(Rt)
+data(Return_data)
 }
 \keyword{datasets}

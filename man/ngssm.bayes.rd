@@ -14,7 +14,7 @@ ngssm.bayes(formula,data,na.action="na.omit",pz=NULL,nBreaks=NULL,
 model="Poisson",StaPar=NULL,amp=FALSE,a0=0.01,b0=0.01,prw=c(1,1),
 prnu=NULL,prchi=NULL,prmu=NULL,prbetamu=NULL,prbetasigma=NULL,lower=NULL,
 upper=NULL,ci=0.95,pointss=10,nsamplex=1000,mcmc=NULL,postplot=FALSE,contourplot=FALSE,
-LabelParTheta=NULL,verbose=TRUE)
+LabelParTheta=NULL,verbose=FALSE)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -208,32 +208,32 @@ the parametric space of the model for the ARMS function in the arguments 'lower'
 ##
 ################################################################################ 
 library(NGSSEML)
-#### Inputs: 
 data(gte_data)
-Ytm=gte_data$V1
-Event=gte_data$V2   # Event: failure, 1.
-Breakm=NGSSEML:::GridP(Ytm, Event, nT = NULL)
-Xtm=NULL
-Ztm=NULL
-model="PEM"
-amp=FALSE
-#LabelParTheta=c("w")
-StaPar=c(0.9)
-p=length(StaPar)
-nn=length(Ytm)
-a0=0.01
-b0=0.01
-#pointss=500000    ### points
-pointss=6    ### points
-nsamplex=300 ## Sampling posterior
-ci=0.95
-alpha=1-ci
-#Fit:
-fitbayes=ngssm.bayes(Ytm~Event,data=data.frame(Ytm,Event),model=model,pz=NULL,
-amp=amp,a0=a0,b0=b0,prw=c(1,1),prnu=NULL,prchi=NULL,prmu=NULL,
-prbetamu=NULL,prbetasigma=NULL,ci=ci,pointss=pointss,nsamplex=nsamplex,
-postplot=FALSE,contourplot=FALSE)
-################################################################################
+Ytm = gte_data$V1
+## Event: failure, 1.
+Event = gte_data$V2  
+Breakm = NGSSEML:::GridP(Ytm, Event, nT = NULL)
+Xtm = NULL
+Ztm = NULL
+model = "PEM"
+amp = FALSE
+##LabelParTheta = c("w")
+StaPar = c(0.9)
+p = length(StaPar)
+nn = length(Ytm)
+a0 = 0.01
+b0 = 0.01
+## points
+pointss = 4 
+## Posterior sample
+nsamplex = 100 
+ci = 0.95
+alpha = 1-ci
+#Bayesian fit
+fitbayes = ngssm.bayes(Ytm~Event, data = data.frame(Ytm, Event), model = model, 
+pz = NULL, amp = amp, a0 = a0, b0 = b0, prw = c(1, 1), prnu = NULL, 
+prchi = NULL, prmu= NULL, prbetamu = NULL, prbetasigma = NULL, ci = ci, 
+pointss = pointss, nsamplex = nsamplex, postplot = FALSE, contourplot = FALSE)
 ################################################################################
 }
 %% Add one or more standard keywords, see file 'KEYWORDS' in the

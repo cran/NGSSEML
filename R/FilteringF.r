@@ -575,7 +575,7 @@ distl="PRED",splot=FALSE){
            #d=at
            #dat=seq(d[1], d[length(d)], by="month")
            at=1:n1
-           dev.new()
+          # dev.new()
            plot(at,ytm[,1],xlab="t",ylab=expression(paste(hat(mu)[t])),type='l',
            lty=c(1),lwd=c(2),col=c("black"),main="Estimates of States")
        #    par(new=TRUE)
@@ -609,7 +609,7 @@ distl="PRED",splot=FALSE){
            #d=at
            #dat=seq(d[1], d[length(d)], by="month")
            at=1:n1
-            dev.new()
+          #  dev.new()
            plot(at,ytm[,1],xlab="t",ylab=expression(paste(hat(mu)[t])),type='l',
            ylim=c(minyt,maxyt),lty=c(1),lwd=c(2),col=c("black"),main="Estimates of States")
        #    par(new=TRUE)
@@ -753,7 +753,7 @@ set.seed(1000)
            #d=at
            #dat=seq(d[1], d[length(d)], by="month")
            aat=1:n1
-            dev.new()
+          #  dev.new()
            plot(aat[2:(n1)],ytm[2:(n1),1],xlab="t",ylim=c(minyt,maxyt),ylab=expression(paste(hat(lambda)[t])),type='l',
            lty=c(1),lwd=c(2),col=c("black"),main="Estimates of States")
        #    par(new=TRUE)
@@ -787,7 +787,7 @@ set.seed(1000)
            #d=at
            #dat=seq(d[1], d[length(d)], by="month")
            at=1:n1
-            dev.new()
+          #  dev.new()
            plot(at,ytm[,1],xlab="t",ylab=expression(paste(hat(mu)[t])),type='l',
            lty=c(1),lwd=c(2),col=c("black"),main="Estimates of States")
        #    par(new=TRUE)
@@ -924,7 +924,7 @@ set.seed(1000)
            #d=at
            #dat=seq(d[1], d[length(d)], by="month")
            at=1:n1
-           dev.new()
+         #  dev.new()
            plot(at,ytm[,1],xlab="t",ylab=expression(paste(hat(mu)[t])),type='s',
            ylim=c(minyt,maxyt),lty=c(1),lwd=c(2),col=c("black"),main="Estimates of States")
        #    par(new=TRUE)
@@ -958,7 +958,7 @@ set.seed(1000)
            #d=at
            #dat=seq(d[1], d[length(d)], by="month")
            at=1:n1
-           dev.new()
+        #   dev.new()
            plot(at,ytm[,1],xlab="t",ylab=expression(paste(hat(mu)[t])),type='s',
            ylim=c(minyt,maxyt),lty=c(1),lwd=c(2),col=c("black"),main="Estimates of States")
        #    par(new=TRUE)

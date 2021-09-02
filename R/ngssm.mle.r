@@ -11,7 +11,7 @@
 ngssm.mle<-function(formula, data,
                     na.action="na.omit",pz=NULL,nBreaks=NULL,
                     model="Poisson",StaPar=NULL,amp=FALSE,
-                    a0=0.01,b0=0.01,ci=0.95,LabelParTheta=NULL,verbose=TRUE,
+                    a0=0.01,b0=0.01,ci=0.95,LabelParTheta=NULL,verbose=FALSE,
                     method="BFGS",hessian=TRUE,control=list(maxit = 30000, temp = 2000, trace = FALSE,REPORT = 500)){
   #NA
   if(na.action=="na.omit"){na.omit(data)}
@@ -722,7 +722,11 @@ ngssm.mle<-function(formula, data,
     #names(obj$x)<-c("Order obs.")
     obj$summary<-ngssm.list #colocar a lista que criei de output
     class(obj) = "ngssm.mle"
-    return(obj)
+    class(ngssm.list) = "ngssm.mle"
+    ob<-ngssm.list[[1]]; 
+    class(ob) = "ngssm.mle"
+    if(verbose==TRUE) {obj<-obj}else{obj<-ob}
+    return(obj) 
     
     
   }
@@ -918,7 +922,11 @@ ngssm.mle<-function(formula, data,
     #names(obj$x)<-c("Order obs.")
     obj$summary<-ngssm.list #colocar a lista que criei de output
     class(obj) = "ngssm.mle"
-    return(obj)
+    class(ngssm.list) = "ngssm.mle"
+    ob<-ngssm.list[[1]]; 
+    class(ob) = "ngssm.mle"
+    if(verbose==TRUE) {obj<-obj}else{obj<-ob}
+    return(obj) 
     
   }
   
@@ -1083,6 +1091,9 @@ ngssm.mle<-function(formula, data,
     #obj$summary<-list(cat("\n*****Non-Gaussian State Space Models with Exact Likelihood*****\n","\nNGSSEML Package:","MLE -",model,"\n"),ngssm.list) #colocar a lista que criei de output
     obj$summary<-ngssm.list #colocar a lista que criei de output
     class(obj) = "ngssm.mle"
+    ob<-ngssm.list[[1]]; 
+    class(ob) = "ngssm.mle"
+    if(verbose==TRUE) {obj<-obj}else{obj<-ob}
     return(obj) 
     
   }
@@ -1090,5 +1101,3 @@ ngssm.mle<-function(formula, data,
   #return(ngssm.list)
   
 }#End ngssm.mle
-
-

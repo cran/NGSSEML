@@ -12,7 +12,7 @@ the static parameters of the model.
 \usage{
 ngssm.mle(formula, data,na.action="na.omit",pz=NULL,
 nBreaks=NULL,model="Poisson",StaPar=NULL,amp=FALSE,a0=0.01,
-b0=0.01,ci=0.95,LabelParTheta=NULL,verbose=TRUE,method="BFGS",hessian=TRUE,
+b0=0.01,ci=0.95,LabelParTheta=NULL,verbose=FALSE,method="BFGS",hessian=TRUE,
 control=list(maxit = 30000, temp = 2000, trace = FALSE,REPORT = 500))
 
 }
@@ -146,28 +146,25 @@ method.
 
 }
 \examples{
-##########################################################
-#
 ## PEM Example: the GTE data
-##
-##########################################################
-# MLE estimation:
+## MLE estimation
 library(NGSSEML)
 data(gte_data)
-Ytm=gte_data$V1
-Xtm=NULL
-Ztm=NULL
-model="PEM"
-amp=FALSE
-Event=gte_data$V2        # Event: failure, 1.
-Break=NGSSEML:::GridP(Ytm, Event, nT = NULL)
-#LabelParTheta=c("w")
-StaPar=c(0.73)
-a0=0.01
-b0=0.01
-ci=0.95
-fit=ngssm.mle(formula=Ytm~Event,data=data.frame(Ytm,Event),model=model,nBreaks=NULL,
-amp=amp,a0=a0,b0=b0,ci=ci)
+Ytm = gte_data$V1
+Xtm = NULL
+Ztm = NULL
+model = "PEM"
+amp = FALSE
+## Event: failure, 1.
+Event = gte_data$V2        
+Break = NGSSEML:::GridP(Ytm, Event, nT = NULL)
+##LabelParTheta = c("w")
+StaPar = c(0.73)
+a0 = 0.01
+b0 = 0.01
+ci = 0.95
+fit = ngssm.mle(formula=Ytm~Event, data = data.frame(Ytm,Event), model = model, 
+nBreaks= NULL, amp = amp, a0 = a0, b0 = b0, ci = ci)
 ##########################################################
 } 
 %% Add one or more standard keywords, see file 'KEYWORDS' in the

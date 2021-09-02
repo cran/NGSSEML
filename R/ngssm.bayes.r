@@ -18,7 +18,7 @@ ngssm.bayes<-function(formula, data,
                        na.action="na.omit",pz=NULL,nBreaks=NULL,model="Poisson",
                        StaPar=NULL,amp=FALSE,a0=0.01,b0=0.01,prw=c(1,1),prnu=NULL,prchi=NULL,prmu=NULL,prbetamu=NULL,
 prbetasigma=NULL,lower=NULL,upper=NULL,ci=0.95,
-pointss=10,nsamplex=1000,mcmc=NULL,postplot=FALSE,contourplot=FALSE,LabelParTheta=NULL,verbose=TRUE){
+pointss=10,nsamplex=1000,mcmc=NULL,postplot=FALSE,contourplot=FALSE,LabelParTheta=NULL,verbose=FALSE){
 #Begin ngssm.bayes
 
 
@@ -867,7 +867,7 @@ scatterplotMatrix(nuout,var.labels=LabelParTheta)
 }
 }
 if(postplot==TRUE){
- dev.new()
+ #dev.new()
 oldpar <- par(mar=rep(2, 4),mfrow=c(p,2))
 on.exit(par(oldpar)) #line i+1
 #par(mar=rep(2, 4))
@@ -1158,7 +1158,7 @@ scatterplotMatrix(nuout,var.labels=LabelParTheta)
 }
 } # end contour plot
 if(postplot==TRUE){
- dev.new()
+ #dev.new()
 oldpar <- par(mar=rep(2, 4),mfrow=c(p,2))
 on.exit(par(oldpar)) 
 #par(mar=rep(2, 4))
@@ -1384,7 +1384,7 @@ scatterplotMatrix(nuout,var.labels=LabelParTheta)
 }
 } # end contour plot
 if(postplot==TRUE){
- dev.new()
+ #dev.new()
 oldpar <- par(mar=rep(2, 4),mfrow=c(p,2))
 on.exit(par(oldpar)) 
 #par(mar=rep(2, 4))
@@ -1446,7 +1446,10 @@ obj$x<-1:pnn
 obj$summary<-list("*****Non-Gaussian State Space Models with Exact Likelihood*****\nNGSSEML Package:Bayes -",model,ngssm.list[[1]]) #colocar a lista que criei de output
 obj$samplepost<-ngssm.list[[2]]
 class(obj) = "ngssm.bayes"
-return(obj)
+ob<-ngssm.list[[1]]; 
+class(ob) = "ngssm.bayes"
+if(verbose==TRUE) {obj<-obj}else{obj<-ob}
+return(obj) 
 
 #End ARMS
 ################################################################################
@@ -2076,7 +2079,7 @@ if(verbose) print (ngssm.list)
 ngssm.list=list(ngssm.list,postsample)
 p=length(StaPar)
 if(postplot==TRUE){
- dev.new()
+# dev.new()
 message("\nMarginal posterior graphs...")
 message("\nTime:....\n")
 oldpar <- par(mar=rep(2, 4),mfrow=c(p,2))
@@ -2166,7 +2169,7 @@ mpost=matrix(logpost)
 mpost=matrix(logpost)
 #par(mar=rep(1, 4))
 #par(mfrow=c(numgraphs,2))
-dev.new()
+#dev.new()
 oldpar <- par(mar=c(5,5,1,1))
 on.exit(par(oldpar)) #line i+1
 #par(mar=c(5,5,1,1))
@@ -2592,7 +2595,7 @@ names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients
 ngssm.list=list(ngssm.list,postsample)
 #ngssm.list[[1]]
 if(postplot==TRUE){
- dev.new()
+ # dev.new()
 message("\nMarginal posterior graphs...")
 message("\nTime:....\n")
 oldpar <- par(mar=rep(2, 4),mfrow=c(p,2))
@@ -2682,7 +2685,7 @@ mpost=matrix(logpost)
 mpost=matrix(logpost)
 #par(mar=rep(1, 4))
 #par(mfrow=c(numgraphs,2))
- dev.new()
+# dev.new()
 oldpar <- par(mar=c(5,5,1,1))
 on.exit(par(oldpar)) #line i+1
 #par(mar=c(5,5,1,1))
@@ -3087,7 +3090,7 @@ names(ngssm.list)<-c("Bayesian Estimation","Nom. Level(%)","n.obs","coefficients
 
 ngssm.list=list(ngssm.list,postsample)
 if(postplot==TRUE){
- dev.new()
+# dev.new()
 message("\nMarginal posterior graphs...")
 message("\nTime:....\n")
 oldpar <- par(mar=rep(2, 4),mfrow=c(p,2))
@@ -3178,7 +3181,7 @@ mpost=matrix(logpost)
 mpost=matrix(logpost)
 #par(mar=rep(1, 4))
 #par(mfrow=c(numgraphs,2))
-dev.new()
+#dev.new()
 oldpar <- par(mar=c(5,5,1,1))
 on.exit(par(oldpar)) #line i+1
 
@@ -3329,8 +3332,10 @@ message("End!")
   obj$samplepost<-ngssm.list[[2]]
   #obj$data<-data
   class(obj) = "ngssm.bayes"
-  #cat(obj)
-  return(obj)
+  ob<-ngssm.list[[1]]; 
+  class(ob) = "ngssm.bayes"
+  if(verbose==TRUE) {obj<-obj}else{obj<-ob}
+  return(obj) 
   
     
 }#End Numerical Integration

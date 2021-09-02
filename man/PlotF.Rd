@@ -14,9 +14,7 @@
 PlotF(formula, data,na.action="na.omit",pz=NULL,nBreaks=NULL,
 plotYt=TRUE,axisxdate=NULL,transf=1,model="Poisson",posts,Proc="Smooth",
 Type="Marg",distl="PRED",a0=0.01,b0=0.01,ci=0.95,startdate=NULL,enddate=NULL,
-Freq=NULL,Typeline='l',cols=c("black","blue","lightgrey"),xxlab="t",
-yylab=expression(paste(hat(mu)[t])),xxlim=NULL,yylim=NULL,Lty=c(1,2,1),
-Lwd=c(2,2,2),Cex=0.68)
+Freq=NULL,...)
 
 
 }
@@ -108,36 +106,10 @@ Default: a0=0.01.
 \item{Freq}{
      If the argument axisxdateis not NULL, it is necessary to specify a frequency of the data. Optional argument.
 } 
-\item{Typeline}{
-      the type of plot should be drawn. Possible types are "p" for points, "l" for lines, "s" for stair steps and etc.
-Optional argument.
+\item{...}{
+     Other arguments if it is necessary.
 } 
-\item{cols}{
-     You can specify colors in the graph. Optional argument.
-}
-\item{xxlab}{
-     a title for the x-axis. Optional argument.
-}
-\item{yylab}{
-     a title for the y-axis. Optional argument.
-}
-\item{xxlim}{
-     a numeric vector with limits for the x-axis. Optional argument.
-}
-\item{yylim}{
-      a numeric vector with limits for the y-axis. Optional argument.
-}
-\item{Lty}{
-       A line type. Optional argument.
-} 
-\item{Lwd}{
-        Line width relative to the default (default=1).2 is twice as wide. Optional argument.
-} 
-\item{Cex}{
-        number indicating the amount by which plotting text and symbols 
-        should be scaled relative to the default. 1=default, 1.5 is 50\% larger, 
-        0.5 is 50\% smaller, etc. . Optional argument.
-} 
+
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
@@ -145,9 +117,7 @@ Typical usages are
 \preformatted{PlotF(YYtm~Trend+CosAnnual+SinAnnual+CosSemiAnnual+SinSemiAnnual,
 data=data.frame(Ytm,Xtm),model="Poisson",StaPar=estopt,axisxdate=x,Proc="Smooth",
 Type="Cond",distl="FILTER",a0=0.01,b0=0.01,ci=0.95,posts=estopt,
-startdate="1970/01/01",enddate="1983/12/31",Freq="months",
-cols=c("black","blue","lightgrey"),xxlab="t",yylab="Yt",yylim=c(0,15),
-Lty=c(1,2,1),Lwd=c(2,2,2),Cex=0.68}
+startdate="1970/01/01",enddate="1983/12/31",Freq="months",...)}
 
 }
 \value{
@@ -189,38 +159,39 @@ The model options are the Poisson, Normal, Laplace, GED, Gamma, Weibull and Gene
 ###############################################################################
 ## Petro data:
 library(NGSSEML)
-#### Inputs: 
-data(Rt)
-Ytm=Rt$Rt
-Date=Rt$Date
-Xtm=NULL
-Ztm=NULL
-model="GED"
-LabelParTheta=c("W","nu")
-StaPar=c(0.9,1)
-p=length(StaPar)
-nn=length(Ytm)
-a0=0.01
-b0=0.01
-pointss= 4   ### points
-nsamplex=25 ## Sampling posterior
-ci=0.95       # Cred. level
-fitbayes<-ngssm.bayes(Ytm~1,data=data.frame(Ytm),model=model,pz=NULL,
-StaPar=StaPar,a0=a0,b0=b0,prw=c(1,1),
-prnu=c(0.01,0.01),ci=ci,pointss=pointss,nsamplex=nsamplex,
-postplot=FALSE,contourplot=FALSE,LabelParTheta=LabelParTheta)
-#postaux<-fitbayes$samplepost[,]
-posts<-fitbayes$samplepost
-############
-#Smoothing:
-############
-#PlotF function:
-PlotF(Ytm~1,data=data.frame(Ytm),model=model,pz=NULL,plotYt=FALSE,
-transf=-0.5,Proc="Smooth",Type="Marg",distl="PRED",a0=a0,b0=b0,
-ci=ci,posts=posts,startdate=NULL,enddate=NULL,Freq="days",Typeline='l',
-cols=c("black","blue","lightgrey"),xxlab="t",yylab=expression(paste(hat(sigma)[t])),
-yylim=c(0.02,0.10),Lty=c(1,2,1),Lwd=c(2,2,2),Cex=0.68)
-# dev.new()
+## Inputs: 
+data(Return_data)
+Ytm = Return_data$Rt
+Ytm = Ytm[1:200]
+Date = Return_data$Date
+Xtm = NULL
+Ztm = NULL
+model = "GED"
+LabelParTheta = c("W", "nu")
+StaPar=c(0.9, 1)
+p = length(StaPar)
+nn = length(Ytm)
+a0 = 0.01
+b0  = 0.01
+pointss = 4   ### points
+nsamplex = 50 ## Sampling posterior
+ci = 0.95       # Cred. level
+fitbayes=ngssm.bayes(Ytm~1, data = data.frame(Ytm), model = model, pz = NULL,
+StaPar = StaPar, a0 = a0, b0 = b0, prw = c(1, 1), prnu = c(0.01, 0.01), 
+ci = ci, pointss = pointss, nsamplex = nsamplex, postplot = FALSE, 
+contourplot = FALSE, LabelParTheta = LabelParTheta, verbose = TRUE)
+#postaux = fitbayes$samplepost[,]
+posts = fitbayes$samplepost
+
+##Smoothing
+##PlotF function
+
+#PlotF(Ytm~1, data = data.frame(Ytm), model = model, pz = NULL, plotYt = FALSE,
+#transf = -0.5, Proc = "Smooth", Type = "Marg", distl = "PRED", a0 = a0, b0 = b0,
+#ci = ci, posts = posts, startdate = NULL, enddate = NULL, Freq = "days", 
+#typeline = 'l', col = c("black", "blue", "lightgrey"), xlab = "t", ylab = 
+#expression(paste(hat(sigma)[t])), xlim = NULL, ylim = c(0.02, 0.10), 
+#lty = c(1, 2,1), lwd = c(2, 2, 2), cex = 0.68)
 ###############################################################################
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
